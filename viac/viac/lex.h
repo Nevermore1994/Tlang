@@ -5,10 +5,12 @@
 #include<memory>
 #include<unordered_map>
 #include<cstdio>
+#include<cctype> 
+#include "util.h"
 
 namespace viac
 {
-enum class enum_TokenCode
+enum enum_TokenCode
 {
 	/* 运算符及分隔符 */
 	TK_PLUS,							// + 加号
@@ -68,9 +70,9 @@ enum class enum_TokenCode
 	TK_IDENT
 };
 
-enum class enum_LexStatus
+enum enum_LexStatus
 {
-	LEX_NORML,
+	LEX_NORMAL,
 	LEX_SEP,
 };
 
@@ -82,14 +84,34 @@ class Symbol;
 
 struct TkWord
 {
-	TkWord(const std::string& s, const int32_t& index) :spelling(s), tkcode(index), SymStruct(nullptr), Symid(nullptr)
+	TkWord(const std::string& s, const int32_t& index) 
+		: spelling(s)
+		, tkcode(index)
+		, symStruct(nullptr)
+		, symId(nullptr)
+	{
+	}
+
+	TkWord(const int32_t& index, const char* s)
+		: spelling(s)
+		, tkcode(index)
+		, symStruct(nullptr)
+		, symId(nullptr)
+	{
+	}
+
+	TkWord(const std::string& s, const int32_t& index, std::shared_ptr<Symbol>& str, std::shared_ptr<Symbol>& id) 
+		: spelling(s)
+		, tkcode(index)
+		, symStruct(str)
+		, symId(id)
 	{
 
 	}
 	int32_t tkcode;
 	std::string spelling;
-	std::shared_ptr<Symbol> SymStruct;
-	std::shared_ptr<Symbol> Symid;
+	std::shared_ptr<Symbol> symStruct;
+	std::shared_ptr<Symbol> symId;
 };
 
 struct TkWordHash
@@ -111,27 +133,27 @@ struct TkWordEqual
 class Lex
 {
 public:
-	std::unordered_map<std::string, int> tkHashTable;
+	std::unordered_map<std::string, int32_t> tkHashTable;
 	std::vector<TkWord> tkTable;
-	std::string SourceStr;
+	std::string sourceStr;
 	std::string tkstr;
 	char ch; 
 	int32_t token;
 	int32_t tkValue;
 public:
 	
-	Lex(FILE* f):fin(f),ch(0)
+	Lex(FILE* f):fin(f),ch(0), linenum(0)
 	{
 
 	}
 
-	bool TkWordInsert(std::string&);
+	bool tkWordInsert(const std::string&);
 
-	void TkWordDirectInsert(TkWord w);
+	void tkWordDirectInsert(TkWord w);
 
-	int TkWordFind(const std::string& str);
+	int tkWordFind(const std::string& str);
 
-	inline void GetCh()
+	inline void getCh()
 	{
 		if (fin)
 		{
@@ -139,21 +161,21 @@ public:
 		}
 	}
 
-	void Preprocess();
-	void ParseIdentifier();
-	void ParseNum();
-	void ParseString(const char sep);
-	void InitLex();
-	void GetToken();
-	int IsDigit(const char c);
-	int IsNoDigit(const char c);
-	void SkipWhiteSpace();
-	void ParseComment(int type);
-	std::string  GetTkstr(const int32_t index);
-	void TestLex();
-	void ColorToken(const int32_t lex_state);
+	void preprocess();
+	void parseIdentifier();
+	bool isVaildCharacter(const char& ch);
+	void parseNum();
+	void parseString(const char& sep);
+	void clearParseInfo();
+	void initLex();
+	void getToken();
+	void skipWhiteSpace();
+	void parseComment(const int32_t type);
+	std::string  getTkstr(const int32_t index);
+	void testLex();
+	void colorToken(const int32_t lex_state);
 
-	int64_t GetFileLineNum() const noexcept
+	int64_t getFileLineNum() const noexcept
 	{
 		if (ch != File_EOF)
 			return -1;
