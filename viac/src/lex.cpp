@@ -18,7 +18,7 @@ bool Lex::tkWordInsert(const std::string &str)
 
 void Lex::tkWordDirectInsert(TkWord w)
 {
-    tkHashTable._Insert_or_assign(w.spelling, tkTable.size());
+    tkHashTable.insert_or_assign(w.spelling, tkTable.size());
     tkTable.push_back(std::move(w));
 }
 
