@@ -1,8 +1,9 @@
 #include "core/lex.h"
-using namespace viac;
+#include <iostream>
+using namespace T;
 
 int main()
 {
-
+    std::cout << "hello T lang !" << std::endl;
     return 0;
 }

@@ -2,10 +2,10 @@
 
 #include<string>
 
-namespace viac
+namespace T
 {
 
-namespace util
+namespace Util
 {
 	void clearString(std::string& str);
 }

@@ -1,7 +1,7 @@
 #include "lex.h"
 #include <Windows.h>
 
-namespace viac
+namespace T
 {
 
 bool Lex::tkWordInsert(const std::string &str)
@@ -150,8 +150,8 @@ void Lex::colorToken(const int32_t lex_state)
 
 void Lex::clearParseInfo()
 {
-    util::clearString(sourceStr);
-    util::clearString(tkstr);
+    Util::clearString(sourceStr);
+    Util::clearString(tkstr);
 }
 
 void Lex::initLex()
@@ -297,8 +297,8 @@ void Lex::getToken()
             }
             else
             {
-                //Error("²»ÄÜÊ¶±ð,·Ç·¨²Ù×÷·û");
-                //TODO:Âß¼­È¡·´
+                //Error("ï¿½ï¿½ï¿½ï¿½Ê¶ï¿½ï¿½,ï¿½Ç·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½");
+                //TODO:ï¿½ß¼ï¿½È¡ï¿½ï¿½
             }
             break;
         }
@@ -339,7 +339,7 @@ void Lex::getToken()
                 }
                 else
                 {
-                    //Error("Æ´Ð´´íÎó");
+                    //Error("Æ´Ð´ï¿½ï¿½ï¿½ï¿½");
                 }
                 getCh();
             }
@@ -436,7 +436,7 @@ void Lex::getToken()
         }
         default:
         {
-            //Error("Î´ÄÜÊ¶±ðµÄ²Ù×÷·û%c", ch);
+            //Error("Î´ï¿½ï¿½Ê¶ï¿½ï¿½Ä²ï¿½ï¿½ï¿½ï¿½ï¿½%c", ch);
             getCh();
             break;
         }
@@ -457,7 +457,7 @@ void Lex::skipWhiteSpace()
         else if (ch == ' ')
             printf("%c", ch);
         else
-            printf("%c", ch);  //¾ö¶¨ÊÇ·ñ´òÓ¡Ô´ÂëÖÐµÄ»»ÐÐ
+            printf("%c", ch);  //ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ï¿½Ó¡Ô´ï¿½ï¿½ï¿½ÐµÄ»ï¿½ï¿½ï¿½
         getCh();
     }
 }

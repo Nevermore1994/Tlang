@@ -8,65 +8,65 @@
 #include<cctype> 
 #include "util.h"
 
-namespace viac
+namespace T
 {
 enum enum_TokenCode
 {
-	/* ÔËËã·û¼°·Ö¸ô·û */
-	TK_PLUS,							// + ¼ÓºÅ
-	TK_MINUS,							// - ¼õºÅ
-	TK_STAR,							// * ÐÇºÅ
-	TK_DIVIDE,							// / ³ýºÅ
-	TK_MOD,								// % ÇóÓàÔËËã·û
-	TK_EQ,								// == µÈÓÚºÅ
-	TK_NEQ,								// != ²»µÈÓÚºÅ
-	TK_LT,								// < Ð¡ÓÚºÅ
-	TK_LEQ,								// <= Ð¡ÓÚµÈÓÚºÅ
-	TK_GT,								// > ´óÓÚºÅ
-	TK_GEQ,								// >= ´óÓÚµÈÓÚºÅ
-	TK_ASSIGN,							// = ¸³ÖµÔËËã·û 
-	TK_POINTSTO,						// -> Ö¸Ïò½á¹¹Ìå³ÉÔ±ÔËËã·û
-	TK_DOT,								// . ½á¹¹Ìå³ÉÔ±ÔËËã·û
-	TK_AND,								// & µØÖ·ÓëÔËËã·û
-	TK_OPENPA,							// ( ×óÔ²À¨ºÅ
-	TK_CLOSEPA,							// ) ÓÒÔ²À¨ºÅ
-	TK_OPENBR,							// [ ×óÖÐÀ¨ºÅ
-	TK_CLOSEBR,							// ] ÓÒÔ²À¨ºÅ
-	TK_BEGIN,							// { ×ó´óÀ¨ºÅ
-	TK_END,								// } ÓÒ´óÀ¨ºÅ
-	TK_SEMICOLON,						// ; ·ÖºÅ    
-	TK_COMMA,							// , ¶ººÅ
-	TK_ELLIPSIS,						// ... Ê¡ÂÔºÅ
-	TK_EOF,								// ÎÄ¼þ½áÊø·û
+	/* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½ */
+	TK_PLUS,							// + ï¿½Óºï¿½
+	TK_MINUS,							// - ï¿½ï¿½ï¿½ï¿½
+	TK_STAR,							// * ï¿½Çºï¿½
+	TK_DIVIDE,							// / ï¿½ï¿½ï¿½ï¿½
+	TK_MOD,								// % ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	TK_EQ,								// == ï¿½ï¿½ï¿½Úºï¿½
+	TK_NEQ,								// != ï¿½ï¿½ï¿½ï¿½ï¿½Úºï¿½
+	TK_LT,								// < Ð¡ï¿½Úºï¿½
+	TK_LEQ,								// <= Ð¡ï¿½Úµï¿½ï¿½Úºï¿½
+	TK_GT,								// > ï¿½ï¿½ï¿½Úºï¿½
+	TK_GEQ,								// >= ï¿½ï¿½ï¿½Úµï¿½ï¿½Úºï¿½
+	TK_ASSIGN,							// = ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½ï¿½ 
+	TK_POINTSTO,						// -> Ö¸ï¿½ï¿½á¹¹ï¿½ï¿½ï¿½Ô±ï¿½ï¿½ï¿½ï¿½ï¿½
+	TK_DOT,								// . ï¿½á¹¹ï¿½ï¿½ï¿½Ô±ï¿½ï¿½ï¿½ï¿½ï¿½
+	TK_AND,								// & ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	TK_OPENPA,							// ( ï¿½ï¿½Ô²ï¿½ï¿½ï¿½ï¿½
+	TK_CLOSEPA,							// ) ï¿½ï¿½Ô²ï¿½ï¿½ï¿½ï¿½
+	TK_OPENBR,							// [ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	TK_CLOSEBR,							// ] ï¿½ï¿½Ô²ï¿½ï¿½ï¿½ï¿½
+	TK_BEGIN,							// { ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	TK_END,								// } ï¿½Ò´ï¿½ï¿½ï¿½ï¿½ï¿½
+	TK_SEMICOLON,						// ; ï¿½Öºï¿½    
+	TK_COMMA,							// , ï¿½ï¿½ï¿½ï¿½
+	TK_ELLIPSIS,						// ... Ê¡ï¿½Ôºï¿½
+	TK_EOF,								// ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	TK_SPACE,							//
-										/* ³£Á¿ */
-	TK_CINT,							// ÕûÐÍ³£Á¿
-	TK_CCHAR,							// ×Ö·û³£Á¿
-	TK_CSTR,							// ×Ö·û´®³£Á¿
+										/* ï¿½ï¿½ï¿½ï¿½ */
+	TK_CINT,							// ï¿½ï¿½ï¿½Í³ï¿½ï¿½ï¿½
+	TK_CCHAR,							// ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½
+	TK_CSTR,							// ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
-	/* ¹Ø¼ü×Ö */
-	KW_CHAR,							// char¹Ø¼ü×Ö
-	KW_SHORT,							// short¹Ø¼ü×Ö
-	KW_INT,								// int¹Ø¼ü×Ö
-	KW_VOID,							// void¹Ø¼ü×Ö  
-	KW_STRUCT,							// struct¹Ø¼ü×Ö   
-	KW_IF,								// if¹Ø¼ü×Ö
-	KW_ELSE,							// else¹Ø¼ü×Ö
-	KW_FOR,								// for¹Ø¼ü×Ö
-	KW_CONTINUE,						// continue¹Ø¼ü×Ö
-	KW_BREAK,							// break¹Ø¼ü×Ö   
-	KW_RETURN,							// return¹Ø¼ü×Ö
-	KW_SIZEOF,							// sizeof¹Ø¼ü×Ö
+	/* ï¿½Ø¼ï¿½ï¿½ï¿½ */
+	KW_CHAR,							// charï¿½Ø¼ï¿½ï¿½ï¿½
+	KW_SHORT,							// shortï¿½Ø¼ï¿½ï¿½ï¿½
+	KW_INT,								// intï¿½Ø¼ï¿½ï¿½ï¿½
+	KW_VOID,							// voidï¿½Ø¼ï¿½ï¿½ï¿½  
+	KW_STRUCT,							// structï¿½Ø¼ï¿½ï¿½ï¿½   
+	KW_IF,								// ifï¿½Ø¼ï¿½ï¿½ï¿½
+	KW_ELSE,							// elseï¿½Ø¼ï¿½ï¿½ï¿½
+	KW_FOR,								// forï¿½Ø¼ï¿½ï¿½ï¿½
+	KW_CONTINUE,						// continueï¿½Ø¼ï¿½ï¿½ï¿½
+	KW_BREAK,							// breakï¿½Ø¼ï¿½ï¿½ï¿½   
+	KW_RETURN,							// returnï¿½Ø¼ï¿½ï¿½ï¿½
+	KW_SIZEOF,							// sizeofï¿½Ø¼ï¿½ï¿½ï¿½
 	KW_INCLUDE,
 	KW_DO,
 	KW_END,
 
 	KW_REQUIRE,
-	KW_ALIGN,							// __align¹Ø¼ü×Ö	
-	KW_CDECL,							// __cdecl¹Ø¼ü×Ö standard c call
-	KW_STDCALL,							// __stdcall¹Ø¼ü×Ö pascal c call
+	KW_ALIGN,							// __alignï¿½Ø¼ï¿½ï¿½ï¿½	
+	KW_CDECL,							// __cdeclï¿½Ø¼ï¿½ï¿½ï¿½ standard c call
+	KW_STDCALL,							// __stdcallï¿½Ø¼ï¿½ï¿½ï¿½ pascal c call
 
-	/* ±êÊ¶·û */
+	/* ï¿½ï¿½Ê¶ï¿½ï¿½ */
 	TK_IDENT
 };
 
