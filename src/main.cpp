@@ -1,4 +1,4 @@
-#include "lex.h"
+#include "core/lex.h"
 using namespace viac;
 
 int main()
