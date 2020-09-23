@@ -4,7 +4,6 @@
 #include<vector>
 #include<memory>
 #include<unordered_map>
-#include<cstdio>
 #include<cctype> 
 #include "util.h"
 

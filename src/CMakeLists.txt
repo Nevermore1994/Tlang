@@ -1,11 +1,14 @@
+set(CMAKE_CXX_STANDARD 20)
 
-cmake_minimum_required(VERSION 2.8)
-
-#project
 project(Tlang)
 
 add_subdirectory(core)
 
 aux_source_directory(. DIR_SRCS)
 
-add_executable(Tlang main.cpp)
+include_directories(./ ./core)
+
+add_executable(${PROJECT_NAME} main.cpp)
+
+target_link_libraries(${PROJECT_NAME} core)
+

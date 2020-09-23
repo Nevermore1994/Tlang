@@ -1,9 +1,9 @@
 #include "util.h"
 
-namespace viac
+namespace T
 {
 
-void util::clearString(std::string & str)
+void Util::clearString(std::string & str)
 {
     str.clear();
     str.resize(0);

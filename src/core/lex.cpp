@@ -1,6 +1,9 @@
 #include "lex.h"
-#include <Windows.h>
-
+#if _MSC_VER
+#include <windows.h>
+#else
+#include <stdio.h>
+#endif
 namespace T
 {
 
@@ -120,6 +123,8 @@ void Lex::testLex()
     printf("\n code line:%d L\n", linenum);
 }
 
+#if _MSC_VER
+
 void Lex::colorToken(const int32_t lex_state)
 {
     HANDLE had = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -147,6 +152,12 @@ void Lex::colorToken(const int32_t lex_state)
         }
     }
 }
+
+#else
+void Lex::colorToken(const int32_t lex_state)
+{
+}
+#endif
 
 void Lex::clearParseInfo()
 {

@@ -264,3 +264,4 @@ CMakeFiles/
 *.cmake
 *.exe
 CMakeCache.txt
+core/
