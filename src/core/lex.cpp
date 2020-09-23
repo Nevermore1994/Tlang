@@ -1,9 +1,13 @@
 #include "lex.h"
+#include "util.h"
 #if _MSC_VER
 #include <windows.h>
 #else
 #include <stdio.h>
 #endif
+
+using namespace T::Util;
+
 namespace T
 {
 
@@ -120,7 +124,7 @@ void Lex::testLex()
         getToken();
         colorToken(LEX_NORMAL);
     } while (token != TK_EOF);
-    printf("\n code line:%d L\n", linenum);
+    output("\n code line: ", linenum, " L");
 }
 
 #if _MSC_VER
@@ -128,7 +132,6 @@ void Lex::testLex()
 void Lex::colorToken(const int32_t lex_state)
 {
     HANDLE had = GetStdHandle(STD_OUTPUT_HANDLE);
-    std::string str;
     switch (lex_state)
     {
         case LEX_NORMAL:
@@ -141,13 +144,12 @@ void Lex::colorToken(const int32_t lex_state)
                 SetConsoleTextAttribute(had, FOREGROUND_RED | FOREGROUND_GREEN);
             else
                 SetConsoleTextAttribute(had, FOREGROUND_RED | FOREGROUND_INTENSITY);
-            str = getTkstr(token);
-            printf("%s", str.c_str());
+            output(getTkstr(token));
             break;
         }
         case LEX_SEP:
         {
-            printf("%c", ch);
+            output(ch);
             break;
         }
     }
@@ -156,6 +158,32 @@ void Lex::colorToken(const int32_t lex_state)
 #else
 void Lex::colorToken(const int32_t lex_state)
 {
+    switch (lex_state)
+    {
+        case LEX_NORMAL:
+        {
+            TextColor color = TextColor::Black;
+            int32_t info = nil;
+            if (token >= TK_IDENT)
+            {
+                color = TextColor::Blue;
+                info = 1;
+            }
+            else if (token >= KW_CHAR)
+                color = TextColor::Green;
+            else if (token >= TK_CINT)
+                color = TextColor::Green;
+            else
+                color = TextColor::Red;
+            output(getColorText(getTkstr(token), color, info));
+            break;
+        }
+        case LEX_SEP:
+        {
+            output(ch);
+            break;
+        }
+    }
 }
 #endif
 
@@ -246,7 +274,7 @@ void Lex::getToken()
             token = tkTable.back().tkcode;
             break;
         }
-        case '0':	case '1':	case '2':	case'3':
+        case '0':	case '1':	case '2':	case '3':
         case '4':   case '5':	case '6':	case '7':
         case '8':	case '9':
         {
@@ -465,10 +493,8 @@ void Lex::skipWhiteSpace()
                 return;
             linenum++;
         }
-        else if (ch == ' ')
-            printf("%c", ch);
         else
-            printf("%c", ch);  //�����Ƿ��ӡԴ���еĻ���
+            output(ch);  
         getCh();
     }
 }

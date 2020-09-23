@@ -265,3 +265,4 @@ CMakeFiles/
 *.exe
 CMakeCache.txt
 core/
+.vscode/
