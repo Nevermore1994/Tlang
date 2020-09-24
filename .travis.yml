@@ -15,14 +15,13 @@ matrix:
          - MATRIX_EVAL="CC=gcc-9 && CXX=g++-9"
 
 before_install:
-    - eval "${MATRIX_EVAL}
+- eval "${MATRIX_EVAL}"
 
 compiler:
 - gcc
 
 branches:
   only:
-  - master
   - dev
 
 script:
