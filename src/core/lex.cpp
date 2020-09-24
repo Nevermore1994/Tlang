@@ -124,7 +124,7 @@ void Lex::testLex()
         getToken();
         colorToken(LEX_NORMAL);
     } while (token != TK_EOF);
-    output("\n code line: ", linenum, " L");
+    outputConsoleLine("\n code line: ", linenum, " L");
 }
 
 #if _MSC_VER
@@ -144,12 +144,12 @@ void Lex::colorToken(const int32_t lex_state)
                 SetConsoleTextAttribute(had, FOREGROUND_RED | FOREGROUND_GREEN);
             else
                 SetConsoleTextAttribute(had, FOREGROUND_RED | FOREGROUND_INTENSITY);
-            output(getTkstr(token));
+            outputConsole(getTkstr(token));
             break;
         }
         case LEX_SEP:
         {
-            output(ch);
+            outputConsole(ch);
             break;
         }
     }
@@ -175,12 +175,12 @@ void Lex::colorToken(const int32_t lex_state)
                 color = TextColor::Green;
             else
                 color = TextColor::Red;
-            output(getColorText(getTkstr(token), color, info));
+            outputConsole(getColorText(getTkstr(token), color, info));
             break;
         }
         case LEX_SEP:
         {
-            output(ch);
+            outputConsole(ch);
             break;
         }
     }
@@ -494,7 +494,7 @@ void Lex::skipWhiteSpace()
             linenum++;
         }
         else
-            output(ch);  
+            outputConsole(ch);  
         getCh();
     }
 }

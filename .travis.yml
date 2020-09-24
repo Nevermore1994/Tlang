@@ -1,0 +1,30 @@
+language: cpp
+sudo: required
+
+matrix:
+  include:
+    # works on Precise and Trusty
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-10.2
+      env:
+         - MATRIX_EVAL="CC=gcc-4.9 && CXX=g++-4.9"
+
+before_install:
+    - eval "${MATRIX_EVAL}
+
+compiler:
+- gcc
+
+branches:
+  only:
+  - master
+  - dev
+
+script:
+- cmake -G "Unix Makefiles" ../
+- make -j 4
