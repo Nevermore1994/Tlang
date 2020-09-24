@@ -22,7 +22,6 @@ compiler:
 - g++
 
 branches:
-  only:
   - dev
   - master
 
