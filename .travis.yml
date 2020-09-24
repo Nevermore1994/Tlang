@@ -25,5 +25,7 @@ branches:
   - dev
 
 script:
+- ls
+- cd $TRAVIS_BUILD_DIR/Tlang
 - cmake -G "Unix Makefiles" ../
 - make -j 4
