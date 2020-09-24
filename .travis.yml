@@ -1,0 +1,31 @@
+language: cpp
+sudo: required
+
+matrix:
+  include:
+    # works on Precise and Trusty
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+           - gcc-9
+      env:
+         - MATRIX_EVAL="CC=gcc-9 && CXX=g++-9"
+
+before_install:
+- eval "${MATRIX_EVAL}"
+- sudo apt-get install gcc-9 g++-9
+
+compiler:
+- g++
+
+branches:
+  only:
+  - dev
+
+script:
+- cd $TRAVIS_BUILD_DIR
+- cmake -G "Unix Makefiles" .
+- make -j 4
