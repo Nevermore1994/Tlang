@@ -10,12 +10,13 @@ matrix:
           sources:
             - ubuntu-toolchain-r-test
           packages:
-           - g++-10
+           - gcc-9
       env:
-         - MATRIX_EVAL="CC=gcc-10 && CXX=g++-10"
+         - MATRIX_EVAL="CC=gcc-9 && CXX=g++-9"
 
 before_install:
 - eval "${MATRIX_EVAL}"
+- sudo apt-get install gcc-9 g++-9
 
 compiler:
 - g++
