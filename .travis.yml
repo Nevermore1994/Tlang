@@ -26,5 +26,5 @@ branches:
 
 script:
 - cd $TRAVIS_BUILD_DIR
-- cmake -G "Unix Makefiles" ../
+- cmake -G "Unix Makefiles" .
 - make -j 4
