@@ -11,61 +11,58 @@ namespace T
 {
 enum enum_TokenCode
 {
-	/* ��������ָ��� */
-	TK_PLUS,							// + �Ӻ�
-	TK_MINUS,							// - ����
-	TK_STAR,							// * �Ǻ�
-	TK_DIVIDE,							// / ����
-	TK_MOD,								// % ���������
-	TK_EQ,								// == ���ں�
-	TK_NEQ,								// != �����ں�
-	TK_LT,								// < С�ں�
-	TK_LEQ,								// <= С�ڵ��ں�
-	TK_GT,								// > ���ں�
-	TK_GEQ,								// >= ���ڵ��ں�
-	TK_ASSIGN,							// = ��ֵ����� 
-	TK_POINTSTO,						// -> ָ��ṹ���Ա�����
-	TK_DOT,								// . �ṹ���Ա�����
-	TK_AND,								// & ��ַ�������
-	TK_OPENPA,							// ( ��Բ����
-	TK_CLOSEPA,							// ) ��Բ����
-	TK_OPENBR,							// [ ��������
-	TK_CLOSEBR,							// ] ��Բ����
-	TK_BEGIN,							// { �������
-	TK_END,								// } �Ҵ�����
-	TK_SEMICOLON,						// ; �ֺ�    
-	TK_COMMA,							// , ����
-	TK_ELLIPSIS,						// ... ʡ�Ժ�
-	TK_EOF,								// �ļ�������
+	TK_PLUS,							// +
+	TK_MINUS,							// -
+	TK_STAR,							// *
+	TK_DIVIDE,							// /
+	TK_MOD,								// % 
+	TK_EQ,								// ==
+	TK_NEQ,								// !=
+	TK_LT,								// <
+	TK_LEQ,								// <=
+	TK_GT,								// > 
+	TK_GEQ,								// >=
+	TK_ASSIGN,							// = 
+	TK_POINTSTO,						// ->
+	TK_DOT,								// . 
+	TK_AND,								// & 
+	TK_OPENPA,							// ( 
+	TK_CLOSEPA,							// ) 
+	TK_OPENBR,							// [ 
+	TK_CLOSEBR,							// ] 
+	TK_BEGIN,							// { 
+	TK_END,								// } 
+	TK_SEMICOLON,						// ; 
+	TK_COMMA,							// , 
+	TK_ELLIPSIS,						// ..
+	TK_EOF,								// 
 	TK_SPACE,							//
-										/* ���� */
-	TK_CINT,							// ���ͳ���
-	TK_CCHAR,							// �ַ�����
-	TK_CSTR,							// �ַ�������
+										
+	TK_CINT,							// 
+	TK_CCHAR,							// 
+	TK_CSTR,							// 
 
-	/* �ؼ��� */
-	KW_CHAR,							// char�ؼ���
-	KW_SHORT,							// short�ؼ���
-	KW_INT,								// int�ؼ���
-	KW_VOID,							// void�ؼ���  
-	KW_STRUCT,							// struct�ؼ���   
-	KW_IF,								// if�ؼ���
-	KW_ELSE,							// else�ؼ���
-	KW_FOR,								// for�ؼ���
-	KW_CONTINUE,						// continue�ؼ���
-	KW_BREAK,							// break�ؼ���   
-	KW_RETURN,							// return�ؼ���
-	KW_SIZEOF,							// sizeof�ؼ���
+	KW_CHAR,							// char
+	KW_SHORT,							// short
+	KW_INT,								// int
+	KW_VOID,							// void
+	KW_STRUCT,							// struct
+	KW_IF,								// if
+	KW_ELSE,							// else
+	KW_FOR,								// for
+	KW_CONTINUE,						// continue
+	KW_BREAK,							// break
+	KW_RETURN,							// return
+	KW_SIZEOF,							// sizeof
 	KW_INCLUDE,
 	KW_DO,
 	KW_END,
 
 	KW_REQUIRE,
-	KW_ALIGN,							// __align�ؼ���	
-	KW_CDECL,							// __cdecl�ؼ��� standard c call
-	KW_STDCALL,							// __stdcall�ؼ��� pascal c call
+	KW_ALIGN,							// __align
+	KW_CDECL,							// __cdecl  call
+	KW_STDCALL,							// __stdcall
 
-	/* ��ʶ�� */
 	TK_IDENT
 };
 

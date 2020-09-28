@@ -4,6 +4,7 @@
 #include<cstdio>
 #include<iostream>
 #include<mutex>
+#include<thread>
 
 namespace T
 {
@@ -81,6 +82,23 @@ namespace Util
 
 	//only linux
 	std::string getColorText(const std::string& str, TextColor color, int32_t extraInfo = nil);
+
+
+	class Thread
+	{
+	public:
+		template<class Func, typename ... Args>
+		Thread(const std::string& name,Func&& f, Args&& ... args);
+		
+		~Thread();
+
+		const std::string& geThreadName() const { return name_; };
+	private:
+		void func();
+	private:
+		std::thread worker_;
+		std::string name_;
+	};
 }
 
 namespace FileUtil

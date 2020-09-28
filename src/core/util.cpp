@@ -69,8 +69,21 @@ std::string getColorText(const std::string& str, TextColor color, int32_t extraI
 }
 #endif
 
+template<class Func, typename ... Args>
+Thread::Thread(const std::string& name,Func&& f, Args&& ... args)
+    :name_(name)
+    ,worker_(f, args ...)
+{
+    
 }
 
+Thread::~Thread()
+{
+    worker_.join();
+    outputConsoleLine(name_, " thread exit..");
+}
+
+} // end Util
 
 namespace FileUtil
 {
@@ -145,7 +158,7 @@ void File::write(const char* str, uint32_t size)
 }
 
    
-}
+}//end FileUtil
 
 }
 
