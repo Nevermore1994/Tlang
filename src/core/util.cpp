@@ -39,76 +39,6 @@ std::string Util::getNowTime()
     return std::string(t_time);
 }
 
-Util::Log::Log(const std::string& path, int32_t flushInterval, int32_t checkEveryN)
-    :path_(path)
-    ,flushInterval_(flushInterval)
-    ,checkEveryN_(checkEveryN)
-    ,file_(nullptr)
-{
-    init();
-}
-
-Util::Log::Log(const char* path, int32_t flushInterval, int32_t checkEveryN)
-    :path_(path)
-    ,flushInterval_(flushInterval)
-    ,checkEveryN_(checkEveryN)
-    ,file_(nullptr)
-{
-    init();
-}
-
-Util::Log::~Log()
-{
-    windUp();
-}
-
-void Util::Log::init()
-{
-    windUp();
-    if(path_.empty())
-        return;
-    file_ = fopen(getLogFileName(path_).c_str(), "wb");
-    if(!file_)
-    {
-        outputConsoleLine("open log file failed.");
-    }
-    writeSize_ = 0;
-    writeCount_ = 0;
-    outputConsoleLine("begin write log....");
-}
-
-void Util::Log::windUp()
-{
-    if(file_)
-    {
-        fflush(file_);
-        fclose(file_);
-        file_ = nullptr;
-    }
-}
-
-void Util::Log::write(const std::string& str)
-{
-    write(str.c_str(), str.length());
-}
-
-void Util::Log::write(const char* str, uint32_t size)
-{
-    if(!file_)
-    {
-        outputConsoleLine("write log failed.");
-    }
-    writeCount_ ++;
-    size = fwrite(str, 1 , size, file_);
-    writeSize_ += size;
-    if(writeCount_ >= checkEveryN_)
-    {
-        init();
-    }
-}
-
-
-
 //https://www.cnblogs.com/crabxx/p/4046498.html
 #ifdef  __GNUC__
 std::string Util::getColorText(const std::string& str, TextColor color, int32_t extraInfo)
@@ -135,6 +65,77 @@ std::string Util::getColorText(const std::string& str, TextColor color, int32_t 
     return str;
 }
 #endif
+
+
+
+FileUtil::File::File(const std::string& path, int32_t flushInterval, int32_t checkEveryN)
+    :path_(path)
+    ,flushInterval_(flushInterval)
+    ,checkEveryN_(checkEveryN)
+    ,file_(nullptr)
+{
+    init();
+}
+
+FileUtil::File::File(const char* path, int32_t flushInterval, int32_t checkEveryN)
+    :path_(path)
+    ,flushInterval_(flushInterval)
+    ,checkEveryN_(checkEveryN)
+    ,file_(nullptr)
+{
+    init();
+}
+
+FileUtil::File::~File()
+{
+    windUp();
+}
+
+void FileUtil::File::init()
+{
+    windUp();
+    if(path_.empty())
+        return;
+    file_ = fopen(Util::getLogFileName(path_).c_str(), "wb");
+    if(!file_)
+    {
+        Util::outputConsoleLine("open file failed.");
+    }
+    writeSize_ = 0;
+    writeCount_ = 0;
+    Util::outputConsoleLine("begin write ....");
+}
+
+void FileUtil::File::windUp()
+{
+    if(file_)
+    {
+        fflush(file_);
+        fclose(file_);
+        file_ = nullptr;
+    }
+}
+
+void FileUtil::File::write(const std::string& str)
+{
+    write(str.c_str(), str.length());
+}
+
+void FileUtil::File::write(const char* str, uint32_t size)
+{
+    if(!file_)
+    {
+        Util::outputConsoleLine("write log failed.");
+    }
+    writeCount_ ++;
+    size = fwrite(str, 1 , size, file_);
+    writeSize_ += size;
+    if(writeCount_ >= checkEveryN_)
+    {
+        init();
+    }
+}
+
 
 }
 

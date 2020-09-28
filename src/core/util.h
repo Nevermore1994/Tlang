@@ -79,18 +79,24 @@ namespace Util
 
 	std::string getNowTime();
 
-	class Log
+	//only linux
+	std::string getColorText(const std::string& str, TextColor color, int32_t extraInfo = nil);
+}
+
+namespace FileUtil
+{
+	class File
 	{
 	public:
-		explicit Log(const std::string& path, int32_t flushInterval,  int32_t checkEveryN = 1024);
+		explicit File(const std::string& path, int32_t flushInterval,  int32_t checkEveryN = 1024);
 
-		explicit Log(const char* path, int32_t flushInterval, int32_t checkEveryN = 1024);
+		explicit File(const char* path, int32_t flushInterval, int32_t checkEveryN = 1024);
 
-		~Log();
+		~File();
 		
-		Log& operator=(const Log&) = delete;
+		File& operator=(const File&) = delete;
 		
-		Log(const Log&) = delete;
+		File(const File&) = delete;
 		
 		void write(const std::string& str);
 		
@@ -110,13 +116,5 @@ namespace Util
 		uint32_t writeCount_;
 	};
 
-
-	//only linux
-	std::string getColorText(const std::string& str, TextColor color, int32_t extraInfo = nil);
-}
-
-namespace FileUtil
-{
-	
 }
 };
