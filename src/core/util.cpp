@@ -7,13 +7,16 @@
 namespace T
 {
 
-void Util::clearString(std::string & str)
+namespace Util
+{
+
+void clearString(std::string & str)
 {
     str.clear();
     str.resize(0);
 }
 
-std::string Util::getLogFileName(const std::string& basename)
+std::string getLogFileName(const std::string& basename)
 {
     std::string filename;
     filename.reserve(basename.size() + 64);
@@ -29,7 +32,7 @@ std::string Util::getLogFileName(const std::string& basename)
     return filename;
 }
 
-std::string Util::getNowTime()
+std::string getNowTime()
 {
     tm tm_time;
     char t_time[32];
@@ -41,7 +44,7 @@ std::string Util::getNowTime()
 
 //https://www.cnblogs.com/crabxx/p/4046498.html
 #ifdef  __GNUC__
-std::string Util::getColorText(const std::string& str, TextColor color, int32_t extraInfo)
+std::string getColorText(const std::string& str, TextColor color, int32_t extraInfo)
 {
     if(str.empty())
     {
@@ -60,15 +63,19 @@ std::string Util::getColorText(const std::string& str, TextColor color, int32_t 
     return s; 
 }
 #else
-std::string Util::getColorText(const std::string& str, TextColor color, int32_t extraInfo)
+std::string getColorText(const std::string& str, TextColor color, int32_t extraInfo)
 {
     return str;
 }
 #endif
 
+}
 
 
-FileUtil::File::File(const std::string& path, int32_t flushInterval, int32_t checkEveryN)
+namespace FileUtil
+{
+
+File::File(const std::string& path, int32_t flushInterval, int32_t checkEveryN)
     :path_(path)
     ,flushInterval_(flushInterval)
     ,checkEveryN_(checkEveryN)
@@ -77,7 +84,7 @@ FileUtil::File::File(const std::string& path, int32_t flushInterval, int32_t che
     init();
 }
 
-FileUtil::File::File(const char* path, int32_t flushInterval, int32_t checkEveryN)
+File::File(const char* path, int32_t flushInterval, int32_t checkEveryN)
     :path_(path)
     ,flushInterval_(flushInterval)
     ,checkEveryN_(checkEveryN)
@@ -86,12 +93,12 @@ FileUtil::File::File(const char* path, int32_t flushInterval, int32_t checkEvery
     init();
 }
 
-FileUtil::File::~File()
+File::~File()
 {
     windUp();
 }
 
-void FileUtil::File::init()
+void File::init()
 {
     windUp();
     if(path_.empty())
@@ -106,7 +113,7 @@ void FileUtil::File::init()
     Util::outputConsoleLine("begin write ....");
 }
 
-void FileUtil::File::windUp()
+void File::windUp()
 {
     if(file_)
     {
@@ -116,16 +123,17 @@ void FileUtil::File::windUp()
     }
 }
 
-void FileUtil::File::write(const std::string& str)
+void File::write(const std::string& str)
 {
     write(str.c_str(), str.length());
 }
 
-void FileUtil::File::write(const char* str, uint32_t size)
+void File::write(const char* str, uint32_t size)
 {
     if(!file_)
     {
-        Util::outputConsoleLine("write log failed.");
+        Util::outputConsoleLine("write file failed.");
+        return;
     }
     writeCount_ ++;
     size = fwrite(str, 1 , size, file_);
@@ -136,6 +144,8 @@ void FileUtil::File::write(const char* str, uint32_t size)
     }
 }
 
+   
+}
 
 }
 
