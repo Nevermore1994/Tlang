@@ -3,3 +3,6 @@
 <br>
 跨平台的T语言，目前处于开发阶段
 <br>
+
+1. Linux
+2. Windows

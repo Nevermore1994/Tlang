@@ -266,3 +266,4 @@ CMakeFiles/
 CMakeCache.txt
 core/
 .vscode/
+build/
