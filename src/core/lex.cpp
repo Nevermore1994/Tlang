@@ -336,8 +336,6 @@ void Lex::getToken()
             }
             else
             {
-                //Error("����ʶ��,�Ƿ�������");
-                //TODO:�߼�ȡ��
             }
             break;
         }
@@ -378,7 +376,7 @@ void Lex::getToken()
                 }
                 else
                 {
-                    //Error("ƴд����");
+
                 }
                 getCh();
             }
@@ -475,7 +473,6 @@ void Lex::getToken()
         }
         default:
         {
-            //Error("δ��ʶ��Ĳ�����%c", ch);
             getCh();
             break;
         }
