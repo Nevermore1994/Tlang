@@ -77,24 +77,38 @@ namespace Util
 	
 	std::string getLogFileName(const std::string& basename);
 
+	std::string getNowTime();
+
 	class Log
 	{
 	public:
-		explicit Log(const std::string& path,const int32_t& flushInterval, const int32_t& checkEveryN, bool isThreadSafe);
+		explicit Log(const std::string& path, int32_t flushInterval,  int32_t checkEveryN = 1024);
 
-		explicit Log(const char* path, const int32_t& flushInterval, const int32_t& checkEveryN, bool isThreadSafe);
-		~Log() = default;
+		explicit Log(const char* path, int32_t flushInterval, int32_t checkEveryN = 1024);
+
+		~Log();
+		
 		Log& operator=(const Log&) = delete;
+		
 		Log(const Log&) = delete;
+		
+		void write(const std::string& str);
+		
+		void write(const char* str, uint32_t size);
+		
+		void flush();
+	private:
+		void init();
+		
+		void windUp();
 	private:
 		std::string path_;
 		int32_t flushInterval_;
 		int32_t checkEveryN_;
 		File_t file_;
-		bool isThreadSafe_;
-		std::mutex lock_;
+		uint64_t writeSize_;
+		uint32_t writeCount_;
 	};
-
 
 
 	//only linux
