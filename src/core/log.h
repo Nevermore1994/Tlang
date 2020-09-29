@@ -11,7 +11,19 @@ using namespace T::Util;
 using namespace T::FileUtil;
 
 //todo format
-void log();
+void loger(const char* str, ...);
+
+template<typename T>
+void logex(const T& t)
+{
+    
+}
+
+template<typename T, typename ... Args>
+void logex(const T& t, const Args& ... args)
+{
+
+}
 
 class Log
 {
