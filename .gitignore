@@ -263,7 +263,8 @@ Makefile
 CMakeFiles/
 *.cmake
 *.exe
+.core/
 CMakeCache.txt
-core/
 .vscode/
 build/
+*.a
