@@ -136,6 +136,14 @@ void File::windUp()
     }
 }
 
+void File::flush()
+{
+    if(file_)
+    {
+        fflush(file_);
+    }
+}
+
 void File::write(const std::string& str)
 {
     write(str.c_str(), str.length());

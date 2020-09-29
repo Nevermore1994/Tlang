@@ -90,6 +90,9 @@ namespace Util
 		template<class Func, typename ... Args>
 		Thread(const std::string& name,Func&& f, Args&& ... args);
 		
+		template<class Func, typename ... Args>
+		Thread(const char* name, Func&& f, Args&& ... args);
+
 		~Thread();
 
 		const std::string& geThreadName() const { return name_; };
