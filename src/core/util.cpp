@@ -80,7 +80,7 @@ Thread::Thread(const std::string& name,Func&& f, Args&& ... args)
 Thread::~Thread()
 {
     worker_.join();
-    printf("%s thread exit..", name_.c_str());
+    outputConsoleLine(name_, " thread exit..");
 }
 
 } // end Util
@@ -119,11 +119,11 @@ void File::init()
     file_ = fopen(Util::getLogFileName(path_).c_str(), "wb");
     if(!file_)
     {
-       printf("open file failed.");
+        Util::outputConsoleLine("open file failed.");
     }
     writeSize_ = 0;
     writeCount_ = 0;
-    printf("begin write ....");
+    Util::outputConsoleLine("begin write ....");
 }
 
 void File::windUp()
@@ -153,7 +153,7 @@ void File::write(const char* str, uint32_t size)
 {
     if(!file_)
     {
-        printf("write file failed.");
+        Util::outputConsoleLine("write file failed.");
         return;
     }
     writeCount_ ++;
