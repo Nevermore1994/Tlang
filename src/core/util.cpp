@@ -3,6 +3,7 @@
 #include <string>
 #include <assert.h>
 #include <time.h>
+#include<thread>
 
 namespace T
 {
@@ -70,17 +71,63 @@ std::string getColorText(const std::string& str, TextColor color, int32_t extraI
 #endif
 
 template<class Func, typename ... Args>
-Thread::Thread(const std::string& name,Func&& f, Args&& ... args)
+Thread::Thread(const char* name,Func&& f, Args&& ... args)
     :name_(name)
-    ,worker_(f, args ...)
+    ,worker_(&Thread::func)
+    ,isExit_(false)
+    ,isRuning_(true)
 {
-    
+    func_ = std::bind(std::forward<Func>(f), std::forward<Args>(args)...);
 }
+
+Thread::Thread(const char* name)
+    :name_(name)
+    ,worker_(&Thread::func, this)
+    ,isExit_(false)
+    ,isRuning_(false)
+{
+    func_ = nullptr;
+}
+
 
 Thread::~Thread()
 {
-    worker_.join();
+    if(worker_.joinable())
+        worker_.join();
     outputConsoleLine(name_, " thread exit..");
+}
+
+void Thread::stop()
+{
+    isExit_ = true;
+}
+
+void Thread::wait()
+{
+    isRuning_ = false;
+}
+
+void Thread::wakeUp()
+{
+    isRuning_ = true;
+}
+
+template<class Func, typename ... Args>
+void Thread::setFunc(Func&& f, Args&& ... args)
+{
+    func_ = std::bind(std::forward<Func>(f), std::forward<Args>(args)...);
+    isRuning_ = true;
+}
+
+void Thread::func()
+{
+    while(!isExit_)
+    {
+        if(isRuning_ && func_)
+        {
+            func_();
+        }
+    }
 }
 
 } // end Util

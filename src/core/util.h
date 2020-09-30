@@ -5,6 +5,8 @@
 #include<iostream>
 #include<mutex>
 #include<thread>
+#include<functional>
+#include<atomic>
 
 namespace T
 {
@@ -88,19 +90,32 @@ namespace Util
 	{
 	public:
 		template<class Func, typename ... Args>
-		Thread(const std::string& name,Func&& f, Args&& ... args);
-		
-		template<class Func, typename ... Args>
 		Thread(const char* name, Func&& f, Args&& ... args);
+
+		Thread(const char* name);
 
 		~Thread();
 
-		const std::string& geThreadName() const { return name_; };
+		inline const std::string& geThreadName() const { return name_; };
+		
+		void wait();
+		
+		void wakeUp();
+
+		void stop();
+		
+		template<class Func, typename ... Args>
+		void setFunc(Func&& f, Args&& ... args);
+
+		inline bool isRuning() const { return isRuning_.load(); };
 	private:
 		void func();
 	private:
 		std::thread worker_;
 		std::string name_;
+		std::function<void()> func_;
+		std::atomic_bool isRuning_;
+		std::atomic_bool isExit_;
 	};
 }
 
