@@ -9,6 +9,8 @@
 
 #include "LogStream.h"
 
+using namespace T::Detail;
+
 namespace T
 {
 

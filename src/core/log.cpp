@@ -43,6 +43,7 @@ void Log::write()
         std::unique_lock<std::mutex> lock(mutex_);
         cond_.wait(lock, [this] { return this->getLogStream().empty();});
         str = os_.buffer().toString();
+        os_.reset();
     }
     file_.write(str);
 }
