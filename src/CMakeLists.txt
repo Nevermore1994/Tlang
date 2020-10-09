@@ -1,5 +1,7 @@
 set(CMAKE_CXX_STANDARD 17)
 
+set(THREADS_PREFER_PTHREAD_FLAG ON)
+
 project(Tlang)
 
 add_subdirectory(core)
@@ -10,5 +12,7 @@ include_directories(./ ./core)
 
 add_executable(${PROJECT_NAME} main.cpp)
 
-target_link_libraries(${PROJECT_NAME} core)
+find_package(Threads REQUIRED)
+
+target_link_libraries(${PROJECT_NAME} ${CMAKE_THREAD_LIBS_INIT} core)
 
