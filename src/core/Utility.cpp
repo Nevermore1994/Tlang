@@ -44,7 +44,7 @@ std::string getNowTime()
 }
 
 //https://www.cnblogs.com/crabxx/p/4046498.html
-#ifdef  __GNUC__
+#ifdef  linux
 std::string getColorText(const std::string& str, TextColor color, int32_t extraInfo)
 {
     if(str.empty())
