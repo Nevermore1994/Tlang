@@ -1,5 +1,5 @@
-#include "lex.h"
-#include "util.h"
+#include "Lex.h"
+#include "Utility.h"
 #if _MSC_VER
 #include <windows.h>
 #else
