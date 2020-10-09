@@ -1,4 +1,4 @@
-#include "core/lex.h"
+#include "core/Lex.h"
 #include <iostream>
 using namespace T;
 using namespace T::Util;
