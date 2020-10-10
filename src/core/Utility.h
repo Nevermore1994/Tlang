@@ -162,7 +162,6 @@ namespace FileUtil
 		File_t file_;
 		uint64_t writeSize_;
 		uint32_t writeCount_;
-		std::mutex fileMutex_;
 	};
 
 }

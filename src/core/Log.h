@@ -14,7 +14,7 @@ using namespace T::FileUtil;
 namespace T
 {
 
-#define DEBUG 1
+#define DEBUG 0
 
 class Log
 {
@@ -24,7 +24,7 @@ public:
     void write();
 
     template<typename T>
-    LogStream& addLog(const T& t) 
+    Log& operator<<(const T& t) 
     {
         {
             std::unique_lock<std::mutex> lock(mutex_);
@@ -34,10 +34,11 @@ public:
         #endif
             cond_.notify_one();
         }
-        return os_;
+
+        return sharedInstance();
     }
 
-    LogStream& getLogStream() { return os_; }  
+    LogStream& getLogStream() { return os_; } 
 private:
     Log();
     ~Log();
@@ -51,9 +52,9 @@ private:
 
 
 template<typename T>
-LogStream& Logging(const T& t)
+Log& Logging(const T& t)
 {
-    return Log::sharedInstance().addLog(t);
+    return Log::sharedInstance() << t;
 }
 
 

@@ -27,8 +27,7 @@ void Log::write()
     std::string str;
     {
         std::unique_lock<std::mutex> lock(mutex_);
-        std::cout << "log length " << str.length() << std::endl;
-        cond_.wait(lock, [this] { return this->getLogStream().empty();});
+        cond_.wait(lock, [] { return Log::sharedInstance().getLogStream().empty();});
         str = os_.buffer().toString();
         os_.reset();
     }
