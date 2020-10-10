@@ -8,25 +8,11 @@ using namespace T::FileUtil;
 namespace T
 {
 
-template<typename T>
-void Logging(const T& t)
-{
-    Log::sharedInstance()->addLog(t);
-}
-
-template<typename T, typename ... Args>
-void Logging(const T& t, const Args & ...args)
-{
-    Log::sharedInstance()->addLog(t);
-    Logging(args ...);
-}
-
-
 Log::Log()
     :file_("log", 10)
     ,work_("fem", &Log::write, this)
 {
-    instance_ = this;
+
 }
 
 Log::~Log()
@@ -41,6 +27,7 @@ void Log::write()
     std::string str;
     {
         std::unique_lock<std::mutex> lock(mutex_);
+        std::cout << "log length " << str.length() << std::endl;
         cond_.wait(lock, [this] { return this->getLogStream().empty();});
         str = os_.buffer().toString();
         os_.reset();
@@ -48,9 +35,10 @@ void Log::write()
     file_.write(str);
 }
 
-Log* Log::sharedInstance()
+Log& Log::sharedInstance()
 {
-    return instance_;
+    static Log instance;
+    return instance;
 }
 
 } //end namespace T

@@ -24,9 +24,11 @@ std::string getLogFileName(const std::string& basename)
     filename = basename;
 
     char timebuf[32];
-    struct tm tm;
-    time_t now = time(nullptr);
-    strftime(timebuf, sizeof(timebuf), ".%Y%m%d-%H%M%S.", &tm);
+    time_t now; 
+    time(&now);
+    
+    struct tm* tm = localtime(&now);
+    strftime(timebuf, sizeof(timebuf), "_%Y%m%d-%H%M%S", tm);
     filename += timebuf;
     filename += ".log";
 
@@ -70,16 +72,6 @@ std::string getColorText(const std::string& str, TextColor color, int32_t extraI
 }
 #endif
 
-template<class Func, typename ... Args>
-Thread::Thread(const char* name,Func&& f, Args&& ... args)
-    :name_(name)
-    ,worker_(&Thread::func)
-    ,isExit_(false)
-    ,isRuning_(true)
-{
-    func_ = std::bind(std::forward<Func>(f), std::forward<Args>(args)...);
-}
-
 Thread::Thread(const char* name)
     :name_(name)
     ,worker_(&Thread::func, this)
@@ -109,13 +101,6 @@ void Thread::wait()
 
 void Thread::wakeUp()
 {
-    isRuning_ = true;
-}
-
-template<class Func, typename ... Args>
-void Thread::setFunc(Func&& f, Args&& ... args)
-{
-    func_ = std::bind(std::forward<Func>(f), std::forward<Args>(args)...);
     isRuning_ = true;
 }
 
@@ -160,10 +145,13 @@ File::~File()
 
 void File::init()
 {
-    windUp();
     if(path_.empty())
         return;
-    file_ = fopen(Util::getLogFileName(path_).c_str(), "wb");
+    std::string name = Util::getLogFileName(path_);
+    {
+        std::unique_lock<std::mutex> lock(fileMutex_);
+        file_ = fopen(name.c_str(), "wb");
+    }
     if(!file_)
     {
         Util::outputConsoleLine("open file failed.");
@@ -177,6 +165,7 @@ void File::windUp()
 {
     if(file_)
     {
+        std::unique_lock<std::mutex> lock(fileMutex_);
         fflush(file_);
         fclose(file_);
         file_ = nullptr;
@@ -187,6 +176,7 @@ void File::flush()
 {
     if(file_)
     {
+        std::unique_lock<std::mutex> lock(fileMutex_);
         fflush(file_);
     }
 }
@@ -204,10 +194,14 @@ void File::write(const char* str, uint32_t size)
         return;
     }
     writeCount_ ++;
-    size = fwrite(str, 1 , size, file_);
+    {
+        std::unique_lock<std::mutex> lock(fileMutex_);
+        size = fwrite(str, 1 , size, file_);
+    }
     writeSize_ += size;
     if(writeCount_ >= checkEveryN_)
     {
+        windUp();
         init();
     }
 }

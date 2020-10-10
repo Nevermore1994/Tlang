@@ -1,12 +1,11 @@
-#include "core/Lex.h"
+#include "Lex.h"
+#include "test.h"
 #include <iostream>
 using namespace T;
 using namespace T::Util;
 
 int main()
 {
-    std::string s = "hello T lang !";
-    outputConsole(s, 1, 1, 3, 4);
-    outputConsole(getColorText(s, TextColor::Blue));
+    testLog();
     return 0;
 }

@@ -90,7 +90,15 @@ namespace Util
 	{
 	public:
 		template<class Func, typename ... Args>
-		Thread(const char* name, Func&& f, Args&& ... args);
+		Thread(const char* name,Func&& f, Args&& ... args)
+			:name_(name)
+			,worker_(&Thread::func, this)
+			,isExit_(false)
+			,isRuning_(true)
+		{
+			func_ = std::bind(std::forward<Func>(f), std::forward<Args>(args)...);
+		}
+
 
 		Thread(const char* name);
 
@@ -105,7 +113,11 @@ namespace Util
 		void stop();
 		
 		template<class Func, typename ... Args>
-		void setFunc(Func&& f, Args&& ... args);
+		void setFunc(Func&& f, Args&& ... args)
+		{
+			func_ = std::bind(std::forward<Func>(f), std::forward<Args>(args)...);
+			isRuning_ = true;
+		}
 
 		inline bool isRuning() const { return isRuning_.load(); };
 	private:
@@ -150,6 +162,7 @@ namespace FileUtil
 		File_t file_;
 		uint64_t writeSize_;
 		uint32_t writeCount_;
+		std::mutex fileMutex_;
 	};
 
 }

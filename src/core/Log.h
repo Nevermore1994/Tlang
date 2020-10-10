@@ -14,25 +14,26 @@ using namespace T::FileUtil;
 namespace T
 {
 
-template<typename T>
-void Logging(const T& t);
-
-template<typename T, typename ... Args>
-void Logging(const T& t, const Args & ...agrs);
+#define DEBUG 1
 
 class Log
 {
 public:
-    static Log* sharedInstance();
+    static Log& sharedInstance();
     
     void write();
 
     template<typename T>
     LogStream& addLog(const T& t) 
     {
-        std::unique_lock<std::mutex> lock(mutex_);
-        os_ << t;
-        cond_.notify_one();
+        {
+            std::unique_lock<std::mutex> lock(mutex_);
+            os_ << t;
+        #if DEBUG
+            std::cout << "write" << std::endl;
+        #endif
+            cond_.notify_one();
+        }
         return os_;
     }
 
@@ -45,8 +46,15 @@ private:
     File file_;
     std::mutex mutex_;
     LogStream os_;
-    static Log* instance_;
     std::condition_variable cond_;
 };
+
+
+template<typename T>
+LogStream& Logging(const T& t)
+{
+    return Log::sharedInstance().addLog(t);
+}
+
 
 }

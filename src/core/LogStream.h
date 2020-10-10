@@ -139,7 +139,7 @@ public:
 	Fmt(const char* fmt, T val);
 	~Fmt() = default;
 
-        const char* data() const { return buf_; }
+    const char* data() const { return buf_; }
 	int length() const { return length_; }
 private:
 	char buf_[32] = { 0 };
