@@ -35,6 +35,17 @@ std::string getLogFileName(const std::string& basename)
     return filename;
 }
 
+std::string getNowTime()
+{
+    char timebuf[32];
+    time_t now; 
+    time(&now);
+    
+    struct tm* tm = localtime(&now);
+    strftime(timebuf, sizeof(timebuf), "%Y/%m/%d-%H:%M:%S", tm);
+    return std::string(timebuf);
+}
+
 //https://www.cnblogs.com/crabxx/p/4046498.html
 #ifdef  linux
 std::string getColorText(const std::string& str, TextColor color, int32_t extraInfo)

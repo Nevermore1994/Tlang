@@ -29,13 +29,6 @@ namespace Util
 		White
 	};
 	
-	enum class LogLevel
-	{
-		Waring = 0,
-		Info,
-		Error,
-	};
-	
 	//cross platform
 	void clearString(std::string& str);
 

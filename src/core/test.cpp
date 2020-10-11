@@ -2,13 +2,8 @@
 
 void testLog()
 {
-    Logging("1");
-    Logging(1) << 1;
-    Logging(1.23f);
-    Logging(1.2345);
-    Logging('c');
-    for(int i = 0; i < 1000; i++)
-    {
-        Logging("now:") << i;
-    }
+    LOG_ERROR << "11" << "error";
+    LOG_DEBUG << "11" << "debug";
+    LOG_WARN << "11" << "warning";
+    LOG_INFO << "11" << "info";
 }
