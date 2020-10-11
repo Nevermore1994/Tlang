@@ -3,7 +3,8 @@
 #include <string>
 #include <assert.h>
 #include <time.h>
-#include<thread>
+#include <thread>
+#include <sys/time.h>
 
 namespace T
 {
@@ -37,12 +38,14 @@ std::string getLogFileName(const std::string& basename)
 
 std::string getNowTime()
 {
-    char timebuf[32];
+    char timebuf[128];
+    struct timeval    tv;
     time_t now; 
+
     time(&now);
-    
-    struct tm* tm = localtime(&now);
-    strftime(timebuf, sizeof(timebuf), "%Y/%m/%d-%H:%M:%S", tm);
+    gettimeofday(&tv, NULL); //msys2 env, this get localtime(&tv.tv_sec) is error, so in this way.
+    struct tm* p = localtime(&now);
+    snprintf(timebuf, 128, "%02d-%02d-%02d %02d:%02d:%02d.%06ld", p->tm_year + 1900, p->tm_mon + 1, p->tm_mday, p->tm_hour, p->tm_min, p->tm_sec, tv.tv_usec);
     return std::string(timebuf);
 }
 
@@ -129,6 +132,8 @@ File::File(const std::string& path, int32_t flushInterval, int32_t checkEveryN)
     ,flushInterval_(flushInterval)
     ,checkEveryN_(checkEveryN)
     ,file_(nullptr)
+    ,writeCount_(0)
+    ,writeSize_(0)
 {
     init();
 }
@@ -138,6 +143,8 @@ File::File(const char* path, int32_t flushInterval, int32_t checkEveryN)
     ,flushInterval_(flushInterval)
     ,checkEveryN_(checkEveryN)
     ,file_(nullptr)
+    ,writeCount_(0)
+    ,writeSize_(0)
 {
     init();
 }
@@ -149,6 +156,7 @@ File::~File()
 
 void File::init()
 {
+    Util::outputConsoleLine("init file");
     if(path_.empty())
         return;
     std::string name = Util::getLogFileName(path_);
@@ -161,7 +169,7 @@ void File::init()
     }
     writeSize_ = 0;
     writeCount_ = 0;
-    Util::outputConsoleLine("begin write ....");
+    Util::outputConsoleLine(name, " begin write ....");
 }
 
 void File::windUp()
@@ -197,8 +205,10 @@ void File::write(const char* str, uint32_t size)
     writeCount_ ++;
     size = fwrite(str, 1 , size, file_);
     writeSize_ += size;
+    //Util::outputConsoleLine("write file ", checkEveryN_, " ", writeCount_);
     if(writeCount_ >= checkEveryN_)
     {
+        Util::outputConsoleLine("init file ", checkEveryN_, " ", writeCount_);
         windUp();
         init();
     }

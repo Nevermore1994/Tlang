@@ -129,9 +129,9 @@ namespace FileUtil
 	class File
 	{
 	public:
-		explicit File(const std::string& path, int32_t flushInterval,  int32_t checkEveryN = 1024);
+		explicit File(const std::string& path, int32_t flushInterval,  int32_t checkEveryN = 10240);
 
-		explicit File(const char* path, int32_t flushInterval, int32_t checkEveryN = 1024);
+		explicit File(const char* path, int32_t flushInterval, int32_t checkEveryN = 10240);
 
 		~File();
 		
