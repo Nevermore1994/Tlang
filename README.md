@@ -1,5 +1,5 @@
 # Tlang
-[![](https://travis-ci.com/Nevermore1994/Tlang.svg?branch=master)](https://travis-ci.com/github/Nevermore1994/Tlang)
+[![Build Status](https://travis-ci.com/Nevermore1994/Tlang.svg?branch=master)](https://travis-ci.com/Nevermore1994/Tlang)
 
 跨平台的T语言，目前处于开发阶段
 
