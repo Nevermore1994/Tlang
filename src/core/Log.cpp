@@ -11,13 +11,16 @@ namespace T
 Log::Log()
     :file_("log", 10)
     ,work_("log thread", &Log::write, this)
+    ,stop_(false)
 {
 
 }
 
 Log::~Log()
 {
+    stop_ = true;
     file_.flush();
+    cond_.notify_all();
     work_.stop();
 }
 
@@ -27,7 +30,11 @@ void Log::write()
     std::string str;
     {
         std::unique_lock<std::mutex> lock(mutex_);
-        cond_.wait(lock, [] { return Log::sharedInstance().getLogStream().empty();});
+        cond_.wait(lock, [] { return !Log::sharedInstance().getLogStream().empty() || Log::sharedInstance().stop_;});
+        if(stop_ && Log::sharedInstance().getLogStream().empty())
+        {
+            return;
+        }
         str = os_.buffer().toString();
         os_.reset();
     }

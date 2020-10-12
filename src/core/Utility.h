@@ -129,9 +129,9 @@ namespace FileUtil
 	class File
 	{
 	public:
-		explicit File(const std::string& path, int32_t flushInterval,  int32_t checkEveryN = 10240);
+		explicit File(const std::string& path,  int32_t checkEveryN = 4096);
 
-		explicit File(const char* path, int32_t flushInterval, int32_t checkEveryN = 10240);
+		explicit File(const char* path, int32_t checkEveryN = 4096);
 
 		~File();
 		
@@ -150,7 +150,6 @@ namespace FileUtil
 		void windUp();
 	private:
 		std::string path_;
-		int32_t flushInterval_;
 		int32_t checkEveryN_;
 		File_t file_;
 		uint64_t writeSize_;

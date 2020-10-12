@@ -8,7 +8,7 @@ namespace T
 {
 namespace Detail
 {
-const int iSmallBufferSize = 4000;
+const int iSmallBufferSize = 8096;
 const int iMaxBufferSize = 4000 * 1000;
 
 template<size_t SIZE>
@@ -120,7 +120,7 @@ public:
 	void reset() noexcept { buffer_.reset(); }
 	void clear() noexcept { buffer_.bzero(); }
 	int length() noexcept { return buffer_.length(); }    //DeBug
-	bool empty() noexcept { return buffer_.length() > 0;}
+	bool empty() noexcept { return buffer_.length() == 0;}
 
 	const char* print() const { return buffer_.data(); }
 private:

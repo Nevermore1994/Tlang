@@ -10,4 +10,5 @@ void testLog()
     {
         LOG_DEBUG << i << "debug";
     }
+    Util::outputConsoleLine("test end");
 }

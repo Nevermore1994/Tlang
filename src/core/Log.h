@@ -29,7 +29,6 @@ public:
             os_  << t;
             cond_.notify_one();
         }
-
         return sharedInstance();
     }
 
@@ -43,6 +42,7 @@ private:
     std::mutex mutex_;
     LogStream os_;
     std::condition_variable cond_;
+    bool stop_;
 };
 
 
