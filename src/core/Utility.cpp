@@ -135,50 +135,88 @@ void Thread::func()
 namespace FileUtil
 {
 
-File::File(const std::string& path, int32_t checkEveryN)
+#pragma region File
+
+File::File(const std::string& path, FileMode mode)
     :path_(path)
-    ,checkEveryN_(checkEveryN)
-    ,file_(nullptr)
-    ,writeCount_(0)
-    ,writeSize_(0)
+    ,mode_(mode)
 {
-    init();
+
 }
 
-File::File(const char* path, int32_t checkEveryN)
+File::File(const char* path, FileMode mode)
     :path_(path)
-    ,checkEveryN_(checkEveryN)
-    ,file_(nullptr)
-    ,writeCount_(0)
-    ,writeSize_(0)
+    ,mode_(mode)
 {
-    init();
+
 }
 
 File::~File()
 {
-    windUp();
+    if(file_)
+    {
+        fclose(file_);
+        file_ = nullptr;
+    }
 }
 
-void File::init()
+#pragma endregion
+
+#pragma region WriteFile
+
+WriteFile::WriteFile(const std::string& path, bool isLogFile, int32_t checkEveryN)
+    :File(path, FileMode::WriteMode)
+    ,isLogFile_(isLogFile)
+    ,checkEveryN_(checkEveryN)
+    ,writeCount_(0)
+    ,writeSize_(0)
+    ,checkCount_(0)
 {
-    Util::outputConsoleLine("init file");
+    init();
+}
+
+WriteFile::WriteFile(const char* path, bool isLogFile, int32_t checkEveryN)
+    :File(path, FileMode::WriteMode)
+    ,isLogFile_(isLogFile)
+    ,checkEveryN_(checkEveryN)
+    ,writeCount_(0)
+    ,writeSize_(0)
+    ,checkCount_(0)
+{
+    init();
+}
+
+WriteFile::~WriteFile()
+{
+    windup();
+}
+
+void WriteFile::init()
+{
+    Util::outputConsoleLine("write init file");
     if(path_.empty())
         return;
-    std::string name = Util::getLogFileName(path_);
+    std::string name = path_;
+    if(isLogFile_)
     {
-        file_ = fopen(name.c_str(), "wb");
+        name = Util::getLogFileName(path_);
     }
+    else
+    {
+        if(checkCount_)
+            name.append(std::to_string(checkCount_));    
+    }
+    file_ = fopen(name.c_str(), Mode[(int)mode_]);
     if(!file_)
     {
-        Util::outputConsoleLine("open file failed.", strerror(errno));
+        Util::outputConsoleLine("init file failed.", strerror(errno));
     }
     writeSize_ = 0;
     writeCount_ = 0;
     Util::outputConsoleLine(name, " begin write ....");
 }
 
-void File::windUp()
+void WriteFile::windup()
 {
     if(file_)
     {
@@ -188,7 +226,7 @@ void File::windUp()
     }
 }
 
-void File::flush()
+void WriteFile::flush()
 {
     if(file_)
     {
@@ -197,12 +235,12 @@ void File::flush()
     }
 }
 
-void File::write(const std::string& str)
+void WriteFile::write(const std::string& str)
 {
     write(str.c_str(), str.length());
 }
 
-void File::write(const char* str, uint32_t size)
+void WriteFile::write(const char* str, uint32_t size)
 {
     if(!file_)
     {
@@ -218,13 +256,159 @@ void File::write(const char* str, uint32_t size)
     }
     if(writeSize_ >= kLogSize)
     {
-        windUp();
+        windup();
         init();
     }
     
 }
+#pragma endregion 
 
-   
+#pragma region ReadFile
+
+ReadFile::ReadFile(const std::string& path)
+    :File(path, FileMode::ReadMode)
+    ,readSize_(0)
+    ,readOver_(false)
+{
+
+}
+
+ReadFile::ReadFile(const char* path)
+    :File(path, FileMode::ReadMode)
+    ,readSize_(0)
+    ,readOver_(false)
+{
+
+}
+
+ReadFile::~ReadFile()
+{
+    windup();
+}
+
+char ReadFile::readCh()
+{
+    if(file_)
+    {
+        int ch = getc(file_);
+        if(ch == File_EOF)
+        {
+            readOver_ = true;
+        }
+        readSize_ ++;
+        return ch;
+    }
+    else
+    {
+        Util::outputConsoleLine("read ch error. file is invalid.");
+    }
+
+    return File_EOF;
+}
+
+std::string ReadFile::readUntilCh(char ch)
+{
+   if(file_)
+    {
+        std::string res;
+        int ch = getc(file_);
+        while(ch != ch && ch != File_EOF)
+        {
+            res.append(1, ch);
+            readSize_ ++;
+            ch = getc(file_);
+        }
+        if(ch == File_EOF)
+        {
+            readOver_ = true;
+        }
+        return res;
+    }
+    else
+    {
+        Util::outputConsoleLine("read error. file is invalid.");
+    }
+    return "";
+}
+
+std::string ReadFile::readLine()
+{
+    return readUntilCh('\n');
+}
+
+std::string ReadFile::readWord()
+{
+    return readUntilCh(' ');
+}
+
+void ReadFile::init()
+{
+    Util::outputConsoleLine("init read file");
+    if(path_.empty())
+        return;
+    file_ = fopen(path_.c_str(), Mode[(int)mode_]);
+    if(!file_)
+    {
+        Util::outputConsoleLine("init read file failed.", strerror(errno));
+    }
+    readSize_ = 0;
+    readOver_ = false;
+    Util::outputConsoleLine(path_, " begin read ....");
+}
+
+void ReadFile::windup()
+{
+    if(file_)
+    {
+        fclose(file_);
+    }
+}
+
+#pragma endregion
+
+#pragma region FreeFile
+
+FreeFile::FreeFile(const std::string& path, FileMode mode)
+    :File(path, FileMode::FreeMode)
+    ,WriteFile(path, false)
+    ,ReadFile(path)
+{
+
+}
+
+FreeFile::FreeFile(const char* path, FileMode mode)
+    :File(path, FileMode::FreeMode)
+    ,WriteFile(path, false)
+    ,ReadFile(path)
+{
+    
+}
+
+void FreeFile::init() 
+{
+    Util::outputConsoleLine("init read file");
+    if(path_.empty())
+        return;
+    file_ = fopen(path_.c_str(), Mode[(int)mode_]);
+    if(!file_)
+    {
+        Util::outputConsoleLine("init read file failed.", strerror(errno));
+    }
+    Util::outputConsoleLine(path_, " begin read ....");
+}
+
+void FreeFile::windup()
+{
+    if(file_)
+    {
+        fflush(file_);
+        fclose(file_);
+        file_ = nullptr;
+    }
+}
+
+#pragma endregion
+
 }//end FileUtil
 
 }

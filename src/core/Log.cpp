@@ -9,7 +9,7 @@ namespace T
 {
 
 Log::Log()
-    :file_("log", 10)
+    :file_("log", true)
     ,work_("log thread", &Log::write, this)
     ,stop_(false)
 {

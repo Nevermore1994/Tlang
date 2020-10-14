@@ -72,8 +72,6 @@ enum enum_LexStatus
 	LEX_SEP,
 };
 
-constexpr char File_EOF = -1;
-
 constexpr int32_t MAXKEYSIZE = 4 * 1024;
 
 class Symbol;
@@ -173,7 +171,7 @@ public:
 
 	int64_t getFileLineNum() const noexcept
 	{
-		if (ch != File_EOF)
+		if (ch != -1)
 			return -1;
 		return linenum;
 	}

@@ -48,7 +48,7 @@ void Lex::parseComment(const int32_t type)
         {
             while (true)
             {
-                if (ch == '\n' || ch == '*' || ch == File_EOF)
+                if (ch == '\n' || ch == '*' || ch == -1)
                 {
                     break;
                 }
@@ -87,7 +87,7 @@ void Lex::parseComment(const int32_t type)
                 ++linenum;
                 break;
             }
-            else if (ch == File_EOF)
+            else if (ch == -1)
             {
                 return;
             }

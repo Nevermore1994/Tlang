@@ -27,8 +27,8 @@ public:
         {
             std::unique_lock<std::mutex> lock(mutex_);
             os_  << t;
-            cond_.notify_one();
         }
+        cond_.notify_one();
         return sharedInstance();
     }
 
@@ -38,7 +38,7 @@ private:
     ~Log();
 private:
     Thread work_;
-    File file_;
+    WriteFile file_;
     std::mutex mutex_;
     LogStream os_;
     std::condition_variable cond_;
