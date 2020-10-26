@@ -1,5 +1,4 @@
 #include "Lex.h"
-#include "Utility.h"
 #if _MSC_VER
 #include <windows.h>
 #else
@@ -7,6 +6,7 @@
 #endif
 
 using namespace T::Util;
+using namespace T::FileUtil;
 
 namespace T
 {
@@ -48,7 +48,7 @@ void Lex::parseComment(const int32_t type)
         {
             while (true)
             {
-                if (ch == '\n' || ch == '*' || ch == -1)
+                if (ch == '\n' || ch == '*' || ch == File_EOF)
                 {
                     break;
                 }
@@ -56,7 +56,7 @@ void Lex::parseComment(const int32_t type)
             }
             if (ch == '\n')
             {
-                ++linenum;
+                ++linenum_;
                 getCh();
             }
             else if (ch == '*')
@@ -84,10 +84,10 @@ void Lex::parseComment(const int32_t type)
         {
             if (ch == '\n')
             {
-                ++linenum;
+                ++linenum_;
                 break;
             }
-            else if (ch == -1)
+            else if (ch == File_EOF)
             {
                 return;
             }
@@ -124,7 +124,7 @@ void Lex::testLex()
         getToken();
         colorToken(LEX_NORMAL);
     } while (token != TK_EOF);
-    outputConsoleLine("\n code line: ", linenum, " L");
+    outputConsoleLine("\n code line: ", linenum_, " L");
 }
 
 #if _MSC_VER
@@ -251,232 +251,135 @@ void Lex::initLex()
 void Lex::getToken()
 {
     preprocess();
-    switch (ch)
+    if(isVaildCharacter(ch))
     {
-        case 'a':	case 'b':	case 'c':	case 'd':
-        case 'e':	case 'f':	case 'g':	case 'h':
-        case 'i':	case 'j':	case 'k':	case 'l':
-        case 'm':	case 'n':	case 'o':	case 'p':
-        case 'q':	case 'r':	case 's':	case 't':
-        case 'u':	case 'v':	case 'w':	case 'x':
-        case 'y':	case 'z':
-        case 'A':	case 'B':	case 'C':	case 'D':
-        case 'E':	case 'F':	case 'G':	case 'H':
-        case 'I':	case 'J':	case 'K':	case 'L':
-        case 'M':	case 'N':	case 'O':	case 'P':
-        case 'Q':	case 'R':	case 'S':	case 'T':
-        case 'U':	case 'V':	case 'W':	case 'X':
-        case 'Y':	case 'Z':
-        case '_':
+        parseIdentifier();
+        tkWordInsert(tkstr);
+        token = tkTable.back().tkcode;
+    }
+    else if(std::isdigit(ch))
+    {
+        parseNum();
+        token = TK_CINT;
+    } 
+    else if(ch == EOF)
+    {
+        return;
+    }
+    else
+    {
+        switch (ch)
         {
-            parseIdentifier();
-            tkWordInsert(tkstr);
-            token = tkTable.back().tkcode;
-            break;
-        }
-        case '0':	case '1':	case '2':	case '3':
-        case '4':   case '5':	case '6':	case '7':
-        case '8':	case '9':
-        {
-            parseNum();
-            token = TK_CINT;
-            break;
-        }
-        case '+':
-        {
-            getCh();
-            token = TK_PLUS;
-            break;
-        }
-        case '-':
-        {
-            getCh();
-            if (ch == '>')
-            {
-                token = TK_POINTSTO;
+            case '+':
+                token = TK_PLUS;
+                break;
+            case '-':
                 getCh();
-            }
-            else
-                token = TK_MINUS;
-            break;
-        }
-        case '/':
-        {
-            token = TK_DIVIDE;
-            getCh();
-            break;
-        }
-        case '%':
-        {
-            token = TK_MOD;
-            getCh();
-            break;
-        }
-        case '=':
-        {
-            getCh();
-            if (ch == '=')
-            {
-                token = TK_EQ;
+                if (ch == '>')
+                {
+                    token = TK_POINTSTO;
+                }
+                else
+                    token = TK_MINUS;
+                break;
+            case '/':
+                token = TK_DIVIDE;
+                break;
+            case '%':
+                token = TK_MOD;
+                break;
+            case '=':
                 getCh();
-            }
-            else
-            {
-                token = TK_ASSIGN;
-            }
-            break;
-        }
-        case '!':
-        {
-            getCh();
-            if (ch == '=')
-            {
-                token = TK_NEQ;
+                if (ch == '=')
+                {
+                    token = TK_EQ;
+                }
+                else
+                    token = TK_ASSIGN;
+                break;
+            case '!':
                 getCh();
-            }
-            else
-            {
-            }
-            break;
-        }
-        case '<':
-        {
-            getCh();
-            if (ch == '=')
-            {
-                token = TK_LEQ;
+                if (ch == '=')
+                    token = TK_NEQ;
+                else
+                {
+                    //Negation
+                }
+                break;
+            case '<':
                 getCh();
-            }
-            else
-                token = TK_LT;
-            break;
-        }
-        case '>':
-        {
-            getCh();
-            if (ch == '=')
-            {
-                token = TK_GEQ;
+                if (ch == '=')
+                    token = TK_LEQ;
+                else
+                    token = TK_LT;
+                break;
+            case '>':
                 getCh();
-            }
-            else
-                token = TK_GT;
-
-            break;
-        }
-        case '.':
-        {
-            getCh();
-            if (ch == '.')
-            {
+                if (ch == '=')
+                    token = TK_GEQ;
+                else
+                    token = TK_GT;
+                break;
+            case '.':
                 getCh();
                 if (ch == '.')
                 {
-                    token = TK_ELLIPSIS;
+                    getCh();
+                    if (ch == '.')
+                        token = TK_ELLIPSIS;
+                    else
+                        outputConsoleLine("error, mot suppprt sign");
                 }
                 else
-                {
-
-                }
-                getCh();
-            }
-            else
-            {
-                token = TK_DOT;
-            }
-            break;
-        }
-        case '&':
-        {
-            token = TK_AND;
-            getCh();
-            break;
-        }
-        case ';':
-        {
-            token = TK_SEMICOLON;
-            getCh();
-            break;
-        }
-        case '(':
-        {
-            token = TK_OPENPA;
-            getCh();
-            break;
-        }
-        case ')':
-        {
-            token = TK_CLOSEPA;
-            getCh();
-            break;
-        }
-        case '[':
-        {
-            token = TK_OPENBR;
-            getCh();
-            break;
-        }
-        case ']':
-        {
-            token = TK_CLOSEBR;
-            getCh();
-            break;
-        }
-        case '{':
-        {
-            token = TK_BEGIN;
-            getCh();
-            break;
-        }
-        case '}':
-        {
-            token = TK_END;
-            getCh();
-            break;
-        }
-
-        case '\n':
-        {
-            token = TK_SPACE;
-            getCh();
-            break;
-        }
-        case ',':
-        {
-            token = TK_COMMA;
-            getCh();
-            break;
-        }
-        case '*':
-        {
-            token = TK_STAR;
-            getCh();
-            break;
-        }
-        case '\"':
-        {
-            parseString(ch);
-            token = TK_CSTR;
-            break;
-        }
-        case '\'':
-        {
-            parseString(ch);
-            token = TK_CCHAR;
-            tkValue = *(tkstr.c_str());
-            break;
-        }
-        case EOF:
-        {
-            token = TK_EOF;
-            break;
-        }
-        default:
-        {
-            getCh();
-            break;
+                    token = TK_DOT;
+                break;
+            case '&':
+                token = TK_AND;
+                break;
+            case ';':
+                token = TK_SEMICOLON;
+                break;
+            case '(':
+                token = TK_OPENPA;
+                break;
+            case ')':
+                token = TK_CLOSEPA;
+                break;
+            case '[':
+                token = TK_OPENBR;
+                break;
+            case ']':
+                token = TK_CLOSEBR;
+                break;
+            case '{':
+                token = TK_BEGIN;
+                break;
+            case '}':
+                token = TK_END;
+                break;
+            case '\n':
+                token = TK_SPACE;
+                break;
+            case ',':
+                token = TK_COMMA;
+                break;
+            case '*':
+                token = TK_STAR;
+                break;
+            case '\"':
+                parseString(ch);
+                token = TK_CSTR;
+                break;
+            case '\'':
+                parseString(ch);
+                token = TK_CCHAR;
+                tkValue = *(tkstr.c_str());
+                break;
+            default:
+                break;
         }
     }
+    getCh();
 }
 
 void Lex::skipWhiteSpace()
@@ -488,7 +391,7 @@ void Lex::skipWhiteSpace()
             getCh();
             if (ch != '\n')
                 return;
-            linenum++;
+            linenum_++;
         }
         else
             outputConsole(ch);  
@@ -517,7 +420,7 @@ void Lex::preprocess()
             }
             else
             {
-                ungetc(ch, fin);
+                file_.backfillCh(ch);
                 ch = '/';
                 break;
             }

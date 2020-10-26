@@ -34,7 +34,7 @@ enum enum_TokenCode
 	TK_END,								// } 
 	TK_SEMICOLON,						// ; 
 	TK_COMMA,							// , 
-	TK_ELLIPSIS,						// ..
+	TK_ELLIPSIS,						// ...
 	TK_EOF,								// 
 	TK_SPACE,							//
 										
@@ -136,7 +136,12 @@ public:
 	int32_t tkValue;
 public:
 	
-	Lex(FILE* f):fin(f),ch(0), linenum(0)
+	Lex(const std::string& path):file_(path),ch(0), linenum_(0)
+	{
+
+	}
+
+	Lex(const char* path):file_(path), ch(0), linenum_(0)
 	{
 
 	}
@@ -149,10 +154,7 @@ public:
 
 	inline void getCh()
 	{
-		if (fin)
-		{
-			ch = getc(fin);
-		}
+		ch = file_.readCh();
 	}
 
 	void preprocess();
@@ -165,7 +167,7 @@ public:
 	void getToken();
 	void skipWhiteSpace();
 	void parseComment(const int32_t type);
-	std::string  getTkstr(const int32_t index);
+	std::string getTkstr(const int32_t index);
 	void testLex();
 	void colorToken(const int32_t lex_state);
 
@@ -173,11 +175,11 @@ public:
 	{
 		if (ch != -1)
 			return -1;
-		return linenum;
+		return linenum_;
 	}
 private:
-	FILE * fin;
-	int64_t linenum;
+	FileUtil::ReadFile file_;
+	int64_t linenum_;
 };
 
 }

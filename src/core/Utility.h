@@ -173,6 +173,7 @@ public:
 	~ReadFile();
 	std::string readLine();
 	char readCh();
+	void backfillCh(char ch);
 	std::string readWord();
 	inline bool readOver() const { return readOver_;}
 	inline uint64_t readSize() const { return readSize_; }
@@ -190,6 +191,7 @@ class FreeFile final:public ReadFile, public WriteFile
 public:
 	FreeFile(const std::string& path, FileMode mode);
 	FreeFile(const char* path, FileMode mode);
+	~FreeFile();
 private:
 	void init() final;
 	void windup() final;

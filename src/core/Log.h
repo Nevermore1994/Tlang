@@ -29,6 +29,7 @@ public:
             os_  << t;
         }
         cond_.notify_one();
+        
         return sharedInstance();
     }
 

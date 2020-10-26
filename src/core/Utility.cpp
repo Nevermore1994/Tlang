@@ -270,7 +270,7 @@ ReadFile::ReadFile(const std::string& path)
     ,readSize_(0)
     ,readOver_(false)
 {
-
+    init();
 }
 
 ReadFile::ReadFile(const char* path)
@@ -278,7 +278,7 @@ ReadFile::ReadFile(const char* path)
     ,readSize_(0)
     ,readOver_(false)
 {
-
+    init();
 }
 
 ReadFile::~ReadFile()
@@ -304,6 +304,18 @@ char ReadFile::readCh()
     }
 
     return File_EOF;
+}
+
+void ReadFile::backfillCh(char ch)
+{
+    if(file_)
+    {
+        ungetc(ch, file_);
+    }
+    else
+    {
+        Util::outputConsoleLine("backfillCh error. file is invalid.");
+    }
 }
 
 std::string ReadFile::readUntilCh(char ch)
@@ -373,7 +385,7 @@ FreeFile::FreeFile(const std::string& path, FileMode mode)
     ,WriteFile(path, false)
     ,ReadFile(path)
 {
-
+    init();
 }
 
 FreeFile::FreeFile(const char* path, FileMode mode)
@@ -381,7 +393,12 @@ FreeFile::FreeFile(const char* path, FileMode mode)
     ,WriteFile(path, false)
     ,ReadFile(path)
 {
-    
+    init();
+}
+
+FreeFile::~FreeFile()
+{
+    windup();
 }
 
 void FreeFile::init() 
