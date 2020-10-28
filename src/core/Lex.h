@@ -127,21 +127,13 @@ struct TkWordEqual
 class Lex
 {
 public:
-	std::unordered_map<std::string, int32_t> tkHashTable;
-	std::vector<TkWord> tkTable;
-	std::string sourceStr;
-	std::string tkstr;
-	char ch; 
-	int32_t token;
-	int32_t tkValue;
-public:
 	
-	Lex(const std::string& path):file_(path),ch(0), linenum_(0)
+	Lex(const std::string& path):file_(path),ch_(0), linenum_(0)
 	{
 
 	}
 
-	Lex(const char* path):file_(path), ch(0), linenum_(0)
+	Lex(const char* path):file_(path), ch_(0), linenum_(0)
 	{
 
 	}
@@ -154,7 +146,7 @@ public:
 
 	inline void getCh()
 	{
-		ch = file_.readCh();
+		ch_ = file_.readCh();
 	}
 
 	void preprocess();
@@ -173,13 +165,21 @@ public:
 
 	int64_t getFileLineNum() const noexcept
 	{
-		if (ch != -1)
+		if (ch_ != -1)
 			return -1;
 		return linenum_;
 	}
+public:
+	static std::unordered_map<std::string, int32_t> tkHashTable;
+	static std::vector<TkWord> tkTable;
 private:
 	FileUtil::ReadFile file_;
 	int64_t linenum_;
+	std::string sourceStr_;
+	std::string tkstr_;
+	char ch_; 
+	int32_t token_;
+	int32_t tkValue_;
 };
 
 }

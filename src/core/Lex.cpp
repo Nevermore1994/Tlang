@@ -48,21 +48,21 @@ void Lex::parseComment(const int32_t type)
         {
             while (true)
             {
-                if (ch == '\n' || ch == '*' || ch == File_EOF)
+                if (ch_ == '\n' || ch_ == '*' || ch_ == File_EOF)
                 {
                     break;
                 }
                 getCh();
             }
-            if (ch == '\n')
+            if (ch_ == '\n')
             {
                 ++linenum_;
                 getCh();
             }
-            else if (ch == '*')
+            else if (ch_ == '*')
             {
                 getCh();
-                if (ch == '/')
+                if (ch_ == '/')
                 {
                     getCh();
                     return;
@@ -82,12 +82,12 @@ void Lex::parseComment(const int32_t type)
         getCh();
         while (true)
         {
-            if (ch == '\n')
+            if (ch_ == '\n')
             {
                 ++linenum_;
                 break;
             }
-            else if (ch == File_EOF)
+            else if (ch_ == File_EOF)
             {
                 return;
             }
@@ -109,7 +109,7 @@ std::string Lex::getTkstr(const int32_t index)
     }
     else if (index >= static_cast<int32_t>(enum_TokenCode::TK_CINT) && index <= static_cast<int32_t>(enum_TokenCode::TK_CSTR))
     {
-        return sourceStr;
+        return sourceStr_;
     }
     else
     {
@@ -123,7 +123,7 @@ void Lex::testLex()
     {
         getToken();
         colorToken(LEX_NORMAL);
-    } while (token != TK_EOF);
+    } while (token_ != TK_EOF);
     outputConsoleLine("\n code line: ", linenum_, " L");
 }
 
@@ -136,20 +136,20 @@ void Lex::colorToken(const int32_t lex_state)
     {
         case LEX_NORMAL:
         {
-            if (token >= TK_IDENT)
+            if (token_ >= TK_IDENT)
                 SetConsoleTextAttribute(had, FOREGROUND_INTENSITY | FOREGROUND_BLUE | FOREGROUND_GREEN);
-            else if (token >= KW_CHAR)
+            else if (token_ >= KW_CHAR)
                 SetConsoleTextAttribute(had, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
-            else if (token >= TK_CINT)
+            else if (token_ >= TK_CINT)
                 SetConsoleTextAttribute(had, FOREGROUND_RED | FOREGROUND_GREEN);
             else
                 SetConsoleTextAttribute(had, FOREGROUND_RED | FOREGROUND_INTENSITY);
-            outputConsole(getTkstr(token));
+            outputConsole(getTkstr(token_));
             break;
         }
         case LEX_SEP:
         {
-            outputConsole(ch);
+            outputConsole(ch_);
             break;
         }
     }
@@ -164,23 +164,23 @@ void Lex::colorToken(const int32_t lex_state)
         {
             TextColor color = TextColor::Black;
             int32_t info = nil;
-            if (token >= TK_IDENT)
+            if (token_ >= TK_IDENT)
             {
                 color = TextColor::Blue;
                 info = 1;
             }
-            else if (token >= KW_CHAR)
+            else if (token_ >= KW_CHAR)
                 color = TextColor::Green;
-            else if (token >= TK_CINT)
+            else if (token_ >= TK_CINT)
                 color = TextColor::Green;
             else
                 color = TextColor::Red;
-            outputConsole(getColorText(getTkstr(token), color, info));
+            outputConsole(getColorText(getTkstr(token_), color, info));
             break;
         }
         case LEX_SEP:
         {
-            outputConsole(ch);
+            outputConsole(ch_);
             break;
         }
     }
@@ -189,8 +189,8 @@ void Lex::colorToken(const int32_t lex_state)
 
 void Lex::clearParseInfo()
 {
-    Util::clearString(sourceStr);
-    Util::clearString(tkstr);
+    Util::clearString(sourceStr_);
+    Util::clearString(tkstr_);
 }
 
 void Lex::initLex()
@@ -251,56 +251,56 @@ void Lex::initLex()
 void Lex::getToken()
 {
     preprocess();
-    if(isVaildCharacter(ch))
+    if(isVaildCharacter(ch_))
     {
         parseIdentifier();
-        tkWordInsert(tkstr);
-        token = tkTable.back().tkcode;
+        tkWordInsert(tkstr_);
+        token_ = tkTable.back().tkcode;
     }
-    else if(std::isdigit(ch))
+    else if(std::isdigit(ch_))
     {
         parseNum();
-        token = TK_CINT;
+        token_ = TK_CINT;
     } 
-    else if(ch == EOF)
+    else if(ch_ == EOF)
     {
         return;
     }
     else
     {
-        switch (ch)
+        switch (ch_)
         {
             case '+':
-                token = TK_PLUS;
+                token_ = TK_PLUS;
                 break;
             case '-':
                 getCh();
-                if (ch == '>')
+                if (ch_ == '>')
                 {
-                    token = TK_POINTSTO;
+                    token_ = TK_POINTSTO;
                 }
                 else
-                    token = TK_MINUS;
+                    token_ = TK_MINUS;
                 break;
             case '/':
-                token = TK_DIVIDE;
+                token_ = TK_DIVIDE;
                 break;
             case '%':
-                token = TK_MOD;
+                token_ = TK_MOD;
                 break;
             case '=':
                 getCh();
-                if (ch == '=')
+                if (ch_ == '=')
                 {
-                    token = TK_EQ;
+                    token_ = TK_EQ;
                 }
                 else
-                    token = TK_ASSIGN;
+                    token_ = TK_ASSIGN;
                 break;
             case '!':
                 getCh();
-                if (ch == '=')
-                    token = TK_NEQ;
+                if (ch_ == '=')
+                    token_ = TK_NEQ;
                 else
                 {
                     //Negation
@@ -308,72 +308,72 @@ void Lex::getToken()
                 break;
             case '<':
                 getCh();
-                if (ch == '=')
-                    token = TK_LEQ;
+                if (ch_ == '=')
+                    token_ = TK_LEQ;
                 else
-                    token = TK_LT;
+                    token_ = TK_LT;
                 break;
             case '>':
                 getCh();
-                if (ch == '=')
-                    token = TK_GEQ;
+                if (ch_ == '=')
+                    token_ = TK_GEQ;
                 else
-                    token = TK_GT;
+                    token_ = TK_GT;
                 break;
             case '.':
                 getCh();
-                if (ch == '.')
+                if (ch_ == '.')
                 {
                     getCh();
-                    if (ch == '.')
-                        token = TK_ELLIPSIS;
+                    if (ch_ == '.')
+                        token_ = TK_ELLIPSIS;
                     else
                         outputConsoleLine("error, mot suppprt sign");
                 }
                 else
-                    token = TK_DOT;
+                    token_ = TK_DOT;
                 break;
             case '&':
-                token = TK_AND;
+                token_ = TK_AND;
                 break;
             case ';':
-                token = TK_SEMICOLON;
+                token_ = TK_SEMICOLON;
                 break;
             case '(':
-                token = TK_OPENPA;
+                token_ = TK_OPENPA;
                 break;
             case ')':
-                token = TK_CLOSEPA;
+                token_ = TK_CLOSEPA;
                 break;
             case '[':
-                token = TK_OPENBR;
+                token_ = TK_OPENBR;
                 break;
             case ']':
-                token = TK_CLOSEBR;
+                token_ = TK_CLOSEBR;
                 break;
             case '{':
-                token = TK_BEGIN;
+                token_ = TK_BEGIN;
                 break;
             case '}':
-                token = TK_END;
+                token_ = TK_END;
                 break;
             case '\n':
-                token = TK_SPACE;
+                token_ = TK_SPACE;
                 break;
             case ',':
-                token = TK_COMMA;
+                token_ = TK_COMMA;
                 break;
             case '*':
-                token = TK_STAR;
+                token_ = TK_STAR;
                 break;
             case '\"':
-                parseString(ch);
-                token = TK_CSTR;
+                parseString(ch_);
+                token_ = TK_CSTR;
                 break;
             case '\'':
-                parseString(ch);
-                token = TK_CCHAR;
-                tkValue = *(tkstr.c_str());
+                parseString(ch_);
+                token_ = TK_CCHAR;
+                tkValue_ = *(tkstr_.c_str());
                 break;
             default:
                 break;
@@ -384,17 +384,17 @@ void Lex::getToken()
 
 void Lex::skipWhiteSpace()
 {
-    while (ch == ' ' || ch == '\t' || ch == '\r')
+    while (ch_ == ' ' || ch_ == '\t' || ch_ == '\r')
     {
-        if (ch == '\r')
+        if (ch_ == '\r')
         {
             getCh();
-            if (ch != '\n')
+            if (ch_ != '\n')
                 return;
             linenum_++;
         }
         else
-            outputConsole(ch);  
+            outputConsole(ch_);  
         getCh();
     }
 }
@@ -403,29 +403,29 @@ void Lex::preprocess()
 {
     while (true)
     {
-        if (ch == ' ' || ch == '\t' || ch == '\r')
+        if (ch_ == ' ' || ch_ == '\t' || ch_ == '\r')
         {
             skipWhiteSpace();
         }
-        else if (ch == '/')
+        else if (ch_ == '/')
         {
             getCh();
-            if (ch == '*')
+            if (ch_ == '*')
             {
                 parseComment(1);
             }
-            else if (ch == '/')
+            else if (ch_ == '/')
             {
                 parseComment(2);
             }
             else
             {
-                file_.backfillCh(ch);
-                ch = '/';
+                file_.backfillCh(ch_);
+                ch_ = '/';
                 break;
             }
         }
-        else if (ch == '#')
+        else if (ch_ == '#')
         {
 
         }
@@ -438,13 +438,13 @@ void Lex::preprocess()
 
 void Lex::parseIdentifier()
 {
-    sourceStr.clear();
-    sourceStr.resize(0);
-    sourceStr.append(1, ch);
+    sourceStr_.clear();
+    sourceStr_.resize(0);
+    sourceStr_.append(1, ch_);
     getCh();
-    while (std::isdigit(ch) || isVaildCharacter(ch))
+    while (std::isdigit(ch_) || isVaildCharacter(ch_))
     {
-        sourceStr.append(1, ch);
+        sourceStr_.append(1, ch_);
         getCh();
     }
 }
@@ -460,21 +460,21 @@ void Lex::parseNum()
 
     do
     {
-        tkstr.append(1, ch);
-        sourceStr.append(1, ch);
+        tkstr_.append(1, ch_);
+        sourceStr_.append(1, ch_);
         getCh();
-    } while (std::isdigit(ch));
+    } while (std::isdigit(ch_));
 
-    if (ch == '.')
+    if (ch_ == '.')
     {
         do
         {
-            tkstr.append(1, ch);
-            sourceStr.append(1, ch);
+            tkstr_.append(1, ch_);
+            sourceStr_.append(1, ch_);
             getCh();
-        } while (std::isdigit(ch));
+        } while (std::isdigit(ch_));
     }
-    tkValue = std::stoi(tkstr);
+    tkValue_ = std::stoi(tkstr_);
 }
 
 void Lex::parseString(const char & sep)
@@ -482,17 +482,17 @@ void Lex::parseString(const char & sep)
     char c;
     clearParseInfo();
 
-    sourceStr.append(1, sep);
+    sourceStr_.append(1, sep);
     getCh();
     while (true)
     {
-        if (ch == sep)
+        if (ch_ == sep)
             break;
-        else if (ch == '\\')
+        else if (ch_ == '\\')
         {
-            sourceStr.append(1, ch);
+            sourceStr_.append(1, ch_);
             getCh();
-            switch (ch)
+            switch (ch_)
             {
                 case '0':
                     c = '\0';
@@ -528,7 +528,7 @@ void Lex::parseString(const char & sep)
                     c = '\\';
                     break;
                 default:
-                    c = ch;
+                    c = ch_;
                     if (c >= '!' && c <= '~')
                     {
                     }
@@ -537,18 +537,18 @@ void Lex::parseString(const char & sep)
                     }
                     break;
             }
-            tkstr.append(1, c);
-            sourceStr.append(1, ch);
+            tkstr_.append(1, c);
+            sourceStr_.append(1, ch_);
             getCh();
         }
         else
         {
-            tkstr.append(1, ch);
-            sourceStr.append(1, ch);
+            tkstr_.append(1, ch_);
+            sourceStr_.append(1, ch_);
             getCh();
         }
     }
-    sourceStr.append(1, sep);
+    sourceStr_.append(1, sep);
     getCh();
 }
 
