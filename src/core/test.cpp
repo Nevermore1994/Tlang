@@ -13,3 +13,9 @@ void testLog()
     }
     Util::outputConsoleLine("test end");
 }
+
+void testLex()
+{
+    Lex lex("test.tl");
+    lex.testLex();
+}

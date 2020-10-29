@@ -11,13 +11,28 @@ using namespace T::FileUtil;
 namespace T
 {
 
+std::unordered_map<std::string, int32_t> Lex::TokenHashTable;
+std::vector<TkWord> Lex::TokenTable;
+
+Lex::Lex(const std::string& path):file_(path),ch_(0), linenum_(0)
+{
+    initLex();
+    getCh();
+}
+
+Lex::Lex(const char* path):file_(path), ch_(0), linenum_(0)
+{
+    initLex();
+    getCh();
+}
+
 bool Lex::tkWordInsert(const std::string &str)
 {
-    if (tkHashTable.count(str) == 0)
+    if (TokenHashTable.count(str) == 0)
     {
-        int index = tkTable.size();
-        tkHashTable[str] = index;
-        tkTable.emplace_back(str, tkTable.size());
+        int index = TokenTable.size();
+        TokenHashTable[str] = index;
+        TokenTable.emplace_back(str, TokenTable.size());
         return true;
     }
     return false;
@@ -25,20 +40,20 @@ bool Lex::tkWordInsert(const std::string &str)
 
 void Lex::tkWordDirectInsert(TkWord w)
 {
-    tkHashTable.insert_or_assign(w.spelling, tkTable.size());
-    tkTable.push_back(std::move(w));
+    TokenHashTable.insert_or_assign(w.spelling, TokenTable.size());
+    TokenTable.push_back(std::move(w));
 }
 
 int32_t Lex::tkWordFind(const std::string & str)
 {
-    if (tkHashTable.count(str) > 0)
+    if (TokenHashTable.count(str) > 0)
     {
-        return tkHashTable[str];
+        return TokenHashTable[str];
     }
     return -1;
 }
 
-void Lex::parseComment(const int32_t type)
+void Lex::parseComment(int32_t type)
 {
     if (type == 1)
     {
@@ -48,7 +63,7 @@ void Lex::parseComment(const int32_t type)
         {
             while (true)
             {
-                if (ch_ == '\n' || ch_ == '*' || ch_ == File_EOF)
+                if (ch_ == '\n' || ch_ == '*' || ch_ == EOF)
                 {
                     break;
                 }
@@ -87,7 +102,7 @@ void Lex::parseComment(const int32_t type)
                 ++linenum_;
                 break;
             }
-            else if (ch_ == File_EOF)
+            else if (ch_ == EOF)
             {
                 return;
             }
@@ -101,9 +116,9 @@ void Lex::parseComment(const int32_t type)
     }
 }
 
-std::string Lex::getTkstr(const int32_t index)
+std::string Lex::getTkstr(int32_t index)
 {
-    if (index >= tkTable.size())
+    if (index >= TokenTable.size())
     {
         return "";
     }
@@ -113,7 +128,7 @@ std::string Lex::getTkstr(const int32_t index)
     }
     else
     {
-        return tkTable[index].spelling;
+        return TokenTable[index].spelling;
     }
 }
 
@@ -129,7 +144,7 @@ void Lex::testLex()
 
 #if _MSC_VER
 
-void Lex::colorToken(const int32_t lex_state)
+void Lex::colorToken(int32_t lex_state)
 {
     HANDLE had = GetStdHandle(STD_OUTPUT_HANDLE);
     switch (lex_state)
@@ -175,7 +190,8 @@ void Lex::colorToken(const int32_t lex_state)
                 color = TextColor::Green;
             else
                 color = TextColor::Red;
-            outputConsole(getColorText(getTkstr(token_), color, info));
+            //outputConsole(getColorText(getTkstr(token_), color, info));
+            outputConsole(getTkstr(token_));
             break;
         }
         case LEX_SEP:
@@ -195,7 +211,7 @@ void Lex::clearParseInfo()
 
 void Lex::initLex()
 {
-    tkTable = {
+    TokenTable = {
         {TK_PLUS,         "+"            },
         {TK_MINUS,        "-"            },
         {TK_STAR,         "*"            },
@@ -220,7 +236,7 @@ void Lex::initLex()
         {TK_SEMICOLON,    ";"            },
         {TK_COMMA,        ","            },
         {TK_ELLIPSIS,     "..."          },
-        {TK_EOF,          "End_Of_File\n"},
+        {TK_EOF,          "\n"           },
         {TK_SPACE,        "",            },
         {TK_CINT,         "int_const",   },
         {TK_CCHAR,        "char_const",  },
@@ -255,15 +271,17 @@ void Lex::getToken()
     {
         parseIdentifier();
         tkWordInsert(tkstr_);
-        token_ = tkTable.back().tkcode;
+        token_ = TokenTable.back().tkcode;
+        return;
     }
     else if(std::isdigit(ch_))
     {
         parseNum();
-        token_ = TK_CINT;
+        return;
     } 
     else if(ch_ == EOF)
     {
+        token_ = TK_EOF;
         return;
     }
     else
@@ -438,13 +456,11 @@ void Lex::preprocess()
 
 void Lex::parseIdentifier()
 {
-    sourceStr_.clear();
-    sourceStr_.resize(0);
-    sourceStr_.append(1, ch_);
-    getCh();
+    tkstr_.clear();
+    tkstr_.resize(0);
     while (std::isdigit(ch_) || isVaildCharacter(ch_))
     {
-        sourceStr_.append(1, ch_);
+        tkstr_.push_back(ch_);
         getCh();
     }
 }
@@ -460,8 +476,8 @@ void Lex::parseNum()
 
     do
     {
-        tkstr_.append(1, ch_);
-        sourceStr_.append(1, ch_);
+        tkstr_.push_back(ch_);
+        sourceStr_.push_back(ch_);
         getCh();
     } while (std::isdigit(ch_));
 
@@ -469,12 +485,13 @@ void Lex::parseNum()
     {
         do
         {
-            tkstr_.append(1, ch_);
-            sourceStr_.append(1, ch_);
+            tkstr_.push_back(ch_);
+            sourceStr_.push_back(ch_);
             getCh();
         } while (std::isdigit(ch_));
     }
     tkValue_ = std::stoi(tkstr_);
+    token_ = TK_CINT;
 }
 
 void Lex::parseString(const char & sep)
@@ -482,7 +499,7 @@ void Lex::parseString(const char & sep)
     char c;
     clearParseInfo();
 
-    sourceStr_.append(1, sep);
+    sourceStr_.push_back(sep);
     getCh();
     while (true)
     {
@@ -490,7 +507,7 @@ void Lex::parseString(const char & sep)
             break;
         else if (ch_ == '\\')
         {
-            sourceStr_.append(1, ch_);
+            sourceStr_.push_back(ch_);
             getCh();
             switch (ch_)
             {
@@ -537,18 +554,18 @@ void Lex::parseString(const char & sep)
                     }
                     break;
             }
-            tkstr_.append(1, c);
-            sourceStr_.append(1, ch_);
+            tkstr_.push_back(c);
+            sourceStr_.push_back(ch_);
             getCh();
         }
         else
         {
-            tkstr_.append(1, ch_);
-            sourceStr_.append(1, ch_);
+            tkstr_.push_back(ch_);
+            sourceStr_.push_back(ch_);
             getCh();
         }
     }
-    sourceStr_.append(1, sep);
+    sourceStr_.push_back(sep);
     getCh();
 }
 

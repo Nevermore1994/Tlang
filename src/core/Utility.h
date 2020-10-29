@@ -119,8 +119,6 @@ using File_t = FILE*;
 
 constexpr const char* Mode[] = {"rb", "wb", "wb+"};
 
-constexpr char File_EOF = -1;
-
 enum class FileMode
 {
 	ReadMode = 0, 

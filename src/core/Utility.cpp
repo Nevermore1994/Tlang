@@ -291,7 +291,7 @@ char ReadFile::readCh()
     if(file_)
     {
         int ch = getc(file_);
-        if(ch == File_EOF)
+        if(ch == EOF)
         {
             readOver_ = true;
         }
@@ -303,7 +303,7 @@ char ReadFile::readCh()
         Util::outputConsoleLine("read ch error. file is invalid.");
     }
 
-    return File_EOF;
+    return EOF;
 }
 
 void ReadFile::backfillCh(char ch)
@@ -324,13 +324,13 @@ std::string ReadFile::readUntilCh(char ch)
     {
         std::string res;
         int ch = getc(file_);
-        while(ch != ch && ch != File_EOF)
+        while(ch != ch && ch != EOF)
         {
             res.append(1, ch);
             readSize_ ++;
             ch = getc(file_);
         }
-        if(ch == File_EOF)
+        if(ch == EOF)
         {
             readOver_ = true;
         }

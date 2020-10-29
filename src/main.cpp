@@ -6,6 +6,6 @@ using namespace T::Util;
 
 int main()
 {
-    testLog();
+    testLex();
     return 0;
 }

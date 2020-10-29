@@ -128,15 +128,9 @@ class Lex
 {
 public:
 	
-	Lex(const std::string& path):file_(path),ch_(0), linenum_(0)
-	{
+	Lex(const std::string& path);
 
-	}
-
-	Lex(const char* path):file_(path), ch_(0), linenum_(0)
-	{
-
-	}
+	Lex(const char* path);
 
 	bool tkWordInsert(const std::string&);
 
@@ -159,7 +153,7 @@ public:
 	void getToken();
 	void skipWhiteSpace();
 	void parseComment(const int32_t type);
-	std::string getTkstr(const int32_t index);
+	std::string getTkstr(int32_t index);
 	void testLex();
 	void colorToken(const int32_t lex_state);
 
@@ -170,8 +164,8 @@ public:
 		return linenum_;
 	}
 public:
-	static std::unordered_map<std::string, int32_t> tkHashTable;
-	static std::vector<TkWord> tkTable;
+	static std::unordered_map<std::string, int32_t> TokenHashTable;
+	static std::vector<TkWord> TokenTable;
 private:
 	FileUtil::ReadFile file_;
 	int64_t linenum_;
@@ -182,4 +176,4 @@ private:
 	int32_t tkValue_;
 };
 
-}
+}//end namespace T

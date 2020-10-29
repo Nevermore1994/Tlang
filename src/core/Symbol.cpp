@@ -5,18 +5,18 @@ using namespace T;
 
 SymbolPointer SymbolManager::findDefine(int code)
 {
-    if(code >= Lex::tkTable.size())
+    if(code >= Lex::TokenTable.size())
     {
-        return Lex::tkTable.at(code).symStruct;
+        return Lex::TokenTable.at(code).symStruct;
     }
     return nullptr;
 }
 
 SymbolPointer SymbolManager::findId(int id)
 {
-    if(id >= Lex::tkTable.size())
+    if(id >= Lex::TokenTable.size())
     {
-        return Lex::tkTable.at(id).symId;
+        return Lex::TokenTable.at(id).symId;
     }
     return nullptr;
 }
