@@ -142,7 +142,7 @@ void Lex::testLex()
     outputConsoleLine("\n code line: ", linenum_, " L");
 }
 
-#if _MSC_VER
+#if _Win32
 
 void Lex::colorToken(int32_t lex_state)
 {

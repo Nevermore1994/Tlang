@@ -117,8 +117,8 @@ namespace FileUtil
 {
 using File_t = FILE*;
 
-constexpr const char* Mode[] = {"rb", "wb", "wb+"};
 
+constexpr const char* Mode[] = {"rb", "wb", "wb+"};
 enum class FileMode
 {
 	ReadMode = 0, 

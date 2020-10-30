@@ -152,10 +152,10 @@ public:
 	void initLex();
 	void getToken();
 	void skipWhiteSpace();
-	void parseComment(const int32_t type);
+	void parseComment(int32_t type);
 	std::string getTkstr(int32_t index);
 	void testLex();
-	void colorToken(const int32_t lex_state);
+	void colorToken(int32_t lex_state);
 
 	int64_t getFileLineNum() const noexcept
 	{
