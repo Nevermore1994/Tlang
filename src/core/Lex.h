@@ -41,11 +41,15 @@ enum enum_TokenCode
 	TK_CINT,							// 
 	TK_CCHAR,							// 
 	TK_CSTR,							// 
+	TK_DOUBLE,
+	TK_FLOAT,
 
 	KW_CHAR,							// char
 	KW_SHORT,							// short
 	KW_INT,								// int
 	KW_VOID,							// void
+	KW_DOUBLE,
+	KW_FLOAT,
 	KW_STRUCT,							// struct
 	KW_IF,								// if
 	KW_ELSE,							// else
@@ -74,7 +78,7 @@ enum enum_LexStatus
 
 constexpr int32_t MAXKEYSIZE = 4 * 1024;
 
-class Symbol;
+struct Symbol;
 
 struct TkWord
 {
@@ -145,9 +149,9 @@ public:
 
 	void preprocess();
 	void parseIdentifier();
-	bool isVaildCharacter(const char& ch);
+	bool isVaildCharacter(char ch);
 	void parseNum();
-	void parseString(const char& sep);
+	void parseString(char sep);
 	void clearParseInfo();
 	void initLex();
 	void getToken();

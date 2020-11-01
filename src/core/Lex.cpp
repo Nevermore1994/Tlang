@@ -122,7 +122,7 @@ std::string Lex::getTkstr(int32_t index)
     {
         return "";
     }
-    else if (index >= static_cast<int32_t>(enum_TokenCode::TK_CINT) && index <= static_cast<int32_t>(enum_TokenCode::TK_CSTR))
+    else if (index >= static_cast<int32_t>(TK_CINT) && index <= static_cast<int32_t>(TK_FLOAT))
     {
         return sourceStr_;
     }
@@ -246,6 +246,8 @@ void Lex::initLex()
         {KW_SHORT,        "short"        },
         {KW_INT,          "int"          },
         {KW_VOID,         "void"         },
+        {KW_DOUBLE,       "double"       },
+        {KW_FLOAT,        "float"        },
         {KW_STRUCT,       "struct"       },
 
         {KW_IF,           "if"           },
@@ -465,7 +467,7 @@ void Lex::parseIdentifier()
     }
 }
 
-bool Lex::isVaildCharacter(const char& ch)
+bool Lex::isVaildCharacter(char ch)
 {
     return std::isalpha(ch) || (ch == '_');
 }
@@ -473,7 +475,7 @@ bool Lex::isVaildCharacter(const char& ch)
 void Lex::parseNum()
 {
     clearParseInfo();
-
+    token_ = TK_CINT;
     do
     {
         tkstr_.push_back(ch_);
@@ -489,12 +491,16 @@ void Lex::parseNum()
             sourceStr_.push_back(ch_);
             getCh();
         } while (std::isdigit(ch_));
+        token_ = TK_DOUBLE; 
+        if(ch_ == 'f')
+        {
+           token_ = TK_FLOAT; 
+        }
     }
     tkValue_ = std::stoi(tkstr_);
-    token_ = TK_CINT;
 }
 
-void Lex::parseString(const char & sep)
+void Lex::parseString(char sep)
 {
     char c;
     clearParseInfo();
