@@ -131,9 +131,9 @@ class File
 public:
 	explicit File(const std::string& path, FileMode mode);
 	explicit File(const char* path, FileMode mode);
-	~File();
 	File& operator=(const File&) = delete;
 	File(const File&) = delete;
+	virtual ~File();
 private:
 	virtual void init() = 0;
 	virtual void windup() = 0;
@@ -148,7 +148,7 @@ class WriteFile:virtual public File
 public:
 	explicit WriteFile(const std::string& path,  bool isLogFile, int32_t checkEveryN = 4096);
 	explicit WriteFile(const char* path, bool isLogFile, int32_t checkEveryN = 4096);
-	~WriteFile();
+	virtual ~WriteFile();
 	void write(const std::string& str);
 	void write(const char* str, uint32_t size);
 	void flush();
@@ -168,7 +168,7 @@ class ReadFile:virtual public File
 public:
 	explicit ReadFile(const char* path);
 	explicit ReadFile(const std::string& path);
-	~ReadFile();
+	virtual ~ReadFile();
 	std::string readLine();
 	char readCh();
 	void backfillCh(char ch);
@@ -189,7 +189,7 @@ class FreeFile final:public ReadFile, public WriteFile
 public:
 	FreeFile(const std::string& path, FileMode mode);
 	FreeFile(const char* path, FileMode mode);
-	~FreeFile();
+	virtual ~FreeFile();
 private:
 	void init() final;
 	void windup() final;
