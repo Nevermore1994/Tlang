@@ -26,16 +26,14 @@ Lex::Lex(const char* path):file_(path), ch_(0), linenum_(0)
     getCh();
 }
 
-bool Lex::tkWordInsert(const std::string &str)
+uint32_t Lex::tkWordInsert(const std::string &str)
 {
     if (TokenHashTable.count(str) == 0)
     {
-        int index = TokenTable.size();
-        TokenHashTable[str] = index;
-        TokenTable.emplace_back(str, TokenTable.size());
-        return true;
+        TokenHashTable[str] = TokenTable.size();
+        TokenTable.emplace_back(TokenTable.size(), str);
     }
-    return false;
+	return TokenHashTable[str];
 }
 
 void Lex::tkWordDirectInsert(TkWord w)
@@ -142,7 +140,7 @@ void Lex::testLex()
     outputConsoleLine("\n code line: ", linenum_, " L");
 }
 
-#if _Win32
+#if _WIN32
 
 void Lex::colorToken(int32_t lex_state)
 {
@@ -152,7 +150,7 @@ void Lex::colorToken(int32_t lex_state)
         case LEX_NORMAL:
         {
             if (token_ >= TK_IDENT)
-                SetConsoleTextAttribute(had, FOREGROUND_INTENSITY | FOREGROUND_BLUE | FOREGROUND_GREEN);
+                SetConsoleTextAttribute(had, FOREGROUND_INTENSITY);
             else if (token_ >= KW_CHAR)
                 SetConsoleTextAttribute(had, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
             else if (token_ >= TK_CINT)
@@ -241,6 +239,8 @@ void Lex::initLex()
         {TK_CINT,         "int_const",   },
         {TK_CCHAR,        "char_const",  },
         {TK_CSTR,         "str_const",   },
+		{TK_DOUBLE,       "double_const",},
+		{TK_FLOAT,        "float_const", },
 
         {KW_CHAR,         "char"         },
         {KW_SHORT,        "short"        },
@@ -260,10 +260,15 @@ void Lex::initLex()
         {KW_INCLUDE,      "include"      },
         {KW_DO,           "do"           },
         {KW_END,          "end"          },
+		{KW_LET,          "let"          },
         {KW_ALIGN,        "__align"      },
         {KW_CDECL,        "__cdecl"      },
         {KW_STDCALL,      "__stdcall"    },
     };
+	for (auto& word : TokenTable) 
+	{
+		TokenHashTable[word.spelling] = word.tkcode;
+	}
 }
 
 void Lex::getToken()
@@ -272,8 +277,7 @@ void Lex::getToken()
     if(isVaildCharacter(ch_))
     {
         parseIdentifier();
-        tkWordInsert(tkstr_);
-        token_ = TokenTable.back().tkcode;
+		token_ = tkWordInsert(tkstr_);
         return;
     }
     else if(std::isdigit(ch_))
@@ -348,7 +352,7 @@ void Lex::getToken()
                     if (ch_ == '.')
                         token_ = TK_ELLIPSIS;
                     else
-                        outputConsoleLine("error, mot suppprt sign");
+                        outputConsoleLine("error, not suppprt sign");
                 }
                 else
                     token_ = TK_DOT;
@@ -412,6 +416,7 @@ void Lex::skipWhiteSpace()
             if (ch_ != '\n')
                 return;
             linenum_++;
+			outputConsole(ch_);
         }
         else
             outputConsole(ch_);  

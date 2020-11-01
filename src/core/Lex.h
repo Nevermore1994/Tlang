@@ -61,6 +61,7 @@ enum enum_TokenCode
 	KW_INCLUDE,
 	KW_DO,
 	KW_END,
+	KW_LET,
 
 	KW_REQUIRE,
 	KW_ALIGN,							// __align
@@ -82,7 +83,7 @@ struct Symbol;
 
 struct TkWord
 {
-	TkWord(const std::string& s, const int32_t& index) 
+	TkWord(int32_t index, const std::string& s)
 		: spelling(s)
 		, tkcode(index)
 		, symStruct(nullptr)
@@ -90,7 +91,7 @@ struct TkWord
 	{
 	}
 
-	TkWord(const int32_t& index, const char* s)
+	TkWord(int32_t index, const char* s)
 		: spelling(s)
 		, tkcode(index)
 		, symStruct(nullptr)
@@ -98,7 +99,7 @@ struct TkWord
 	{
 	}
 
-	TkWord(const std::string& s, const int32_t& index, std::shared_ptr<Symbol>& str, std::shared_ptr<Symbol>& id) 
+	TkWord(int32_t index, const std::string& s, std::shared_ptr<Symbol>& str, std::shared_ptr<Symbol>& id)
 		: spelling(s)
 		, tkcode(index)
 		, symStruct(str)
@@ -136,7 +137,7 @@ public:
 
 	Lex(const char* path);
 
-	bool tkWordInsert(const std::string&);
+	uint32_t tkWordInsert(const std::string&);
 
 	void tkWordDirectInsert(TkWord w);
 

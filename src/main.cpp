@@ -4,8 +4,9 @@
 using namespace T;
 using namespace T::Util;
 
-int main()
+int main(int argc, char *argv[])
 {
-    testLex();
+    testLex();  
+	getchar();
     return 0;
 }
