@@ -5,7 +5,13 @@
 #include <time.h>
 #include <thread>
 #include <cstring>
+#if linux
 #include <sys/time.h>
+#else
+#include <windows.h>
+#endif // linux
+
+
 
 namespace T
 {
@@ -21,41 +27,42 @@ void clearString(std::string & str)
     str.resize(0);
 }
 
+#if linux
 std::string getLogFileName(const std::string& basename)
 {
-    std::string filename;
-    filename = basename;
+	std::string filename;
+	filename = basename;
 
-    char timebuf[128];
-    struct timeval tv;
-    time_t now; 
+	char timebuf[128];
+	struct timeval tv;
+	time_t now;
 
-    time(&now);
-    gettimeofday(&tv, NULL); //msys2 env, this get localtime(&tv.tv_sec) is error, so in this way.
-    struct tm* p = localtime(&now);
-    snprintf(timebuf, 128, "%02d-%02d-%02d#%02d-%02d-%02d-%06ld", p->tm_year + 1900, p->tm_mon + 1, p->tm_mday, p->tm_hour, p->tm_min, p->tm_sec, tv.tv_usec);
+	time(&now);
+	gettimeofday(&tv, NULL); //msys2 env, this get localtime(&tv.tv_sec) is error, so in this way.
+	struct tm* p = localtime(&now);
+	snprintf(timebuf, 128, "%02d-%02d-%02d#%02d-%02d-%02d-%06ld", p->tm_year + 1900, p->tm_mon + 1, p->tm_mday, p->tm_hour, p->tm_min, p->tm_sec, tv.tv_usec);
 
-    filename.append(timebuf);
-    filename.append(".log");
+	filename.append(timebuf);
+	filename.append(".log");
 
-    return filename;
+	return filename;
 }
 
 std::string getNowTime()
 {
-    char timebuf[128];
-    struct timeval tv;
-    time_t now; 
+	char timebuf[128];
+	struct timeval tv;
+	time_t now;
 
-    time(&now);
-    gettimeofday(&tv, NULL); //msys2 env, this get localtime(&tv.tv_sec) is error, so in this way.
-    struct tm* p = localtime(&now);
-    snprintf(timebuf, 128, "%02d-%02d-%02d %02d:%02d:%02d.%06ld", p->tm_year + 1900, p->tm_mon + 1, p->tm_mday, p->tm_hour, p->tm_min, p->tm_sec, tv.tv_usec);
-    return std::string(timebuf);
+	time(&now);
+	gettimeofday(&tv, NULL); //msys2 env, this get localtime(&tv.tv_sec) is error, so in this way.
+	struct tm* p = localtime(&now);
+	snprintf(timebuf, 128, "%02d-%02d-%02d %02d:%02d:%02d.%06ld", p->tm_year + 1900, p->tm_mon + 1, p->tm_mday, p->tm_hour, p->tm_min, p->tm_sec, tv.tv_usec);
+	return std::string(timebuf);
 }
 
 //https://www.cnblogs.com/crabxx/p/4046498.html
-#ifdef  linux
+
 std::string getColorText(const std::string& str, TextColor color, int32_t extraInfo)
 {
     if(str.empty())
@@ -75,9 +82,21 @@ std::string getColorText(const std::string& str, TextColor color, int32_t extraI
     return s; 
 }
 #else
-std::string getColorText(const std::string& str, TextColor color, int32_t extraInfo)
+std::string getLogFileName(const std::string& basename)
 {
-    return str;
+	std::string filename = basename;
+	filename.append(getNowTime());
+	filename.append(".log");
+	return filename;
+}
+
+std::string getNowTime()
+{
+	SYSTEMTIME sys;
+	GetLocalTime(&sys);
+	char timebuf[128];
+	snprintf(timebuf, 128, "%04d-%02d-%02d %02d:%02d:%02d.%06ld", sys.wYear, sys.wMonth, sys.wDay, sys.wHour, sys.wMinute, sys.wSecond, sys.wMilliseconds);
+	return std::string(timebuf);
 }
 #endif
 
@@ -362,6 +381,7 @@ void ReadFile::init()
     if(!file_)
     {
         Util::outputConsoleLine("init read file failed.", strerror(errno));
+        return;
     }
     readSize_ = 0;
     readOver_ = false;
