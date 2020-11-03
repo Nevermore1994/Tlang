@@ -7,8 +7,10 @@ namespace T
 {
 
 struct Symbol;
+struct SymbolType;
 
 using SymbolPointer = std::shared_ptr<Symbol>;
+using SymbolTypePointer = std::shared_ptr<SymbolType>;
 
 struct SymbolType
 {

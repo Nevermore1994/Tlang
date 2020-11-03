@@ -9,7 +9,7 @@
 
 namespace T
 {
-enum enum_TokenCode
+enum TokenCode
 {
 	TK_PLUS,							// +
 	TK_MINUS,							// -

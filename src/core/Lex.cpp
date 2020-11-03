@@ -1,5 +1,5 @@
 #include "Lex.h"
-#if _MSC_VER
+#if _WIN32
 #include <windows.h>
 #else
 #include <stdio.h>
@@ -7,7 +7,6 @@
 
 using namespace T::Util;
 using namespace T::FileUtil;
-
 namespace T
 {
 
