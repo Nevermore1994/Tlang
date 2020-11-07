@@ -6,9 +6,13 @@
 #include<unordered_map>
 #include<cctype> 
 #include"Utility.h"
+#include"Compiler.h"
 
 namespace T
 {
+
+class Compiler;
+
 enum TokenCode
 {
 	TK_PLUS,							// +
@@ -68,10 +72,11 @@ enum TokenCode
 	KW_CDECL,							// __cdecl  call
 	KW_STDCALL,							// __stdcall
 
+	TK_DEFAULT,
 	TK_IDENT
 };
 
-enum enum_LexStatus
+enum LexStatus
 {
 	LEX_NORMAL,
 	LEX_SEP,
@@ -133,9 +138,9 @@ class Lex
 {
 public:
 	
-	Lex(const std::string& path);
+	Lex(const std::string& path, Compiler& compiler);
 
-	Lex(const char* path);
+	Lex(const char* path, Compiler& compiler);
 
 	uint32_t tkWordInsert(const std::string&);
 
@@ -155,12 +160,13 @@ public:
 	void parseString(char sep);
 	void clearParseInfo();
 	void initLex();
-	void getToken();
+	uint32_t handleToken();
+	uint32_t getToken() const;
 	void skipWhiteSpace();
-	void parseComment(int32_t type);
-	std::string getTkstr(int32_t index);
+	void parseComment(uint32_t type);
+	std::string getTkstr(uint32_t index);
 	void testLex();
-	void colorToken(int32_t lex_state);
+	void colorToken(uint32_t lex_state);
 
 	int64_t getFileLineNum() const noexcept
 	{
@@ -177,8 +183,9 @@ private:
 	std::string sourceStr_;
 	std::string tkstr_;
 	char ch_; 
-	int32_t token_;
+	uint32_t token_;
 	int32_t tkValue_;
+	Compiler& manager_;
 };
 
 }//end namespace T

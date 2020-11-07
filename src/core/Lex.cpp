@@ -13,13 +13,21 @@ namespace T
 std::unordered_map<std::string, int32_t> Lex::TokenHashTable;
 std::vector<TkWord> Lex::TokenTable;
 
-Lex::Lex(const std::string& path):file_(path),ch_(0), linenum_(0)
+Lex::Lex(const std::string& path, Compiler& compiler)
+	: file_(path)
+	,ch_(0)
+	,linenum_(0)
+	,manager_(compiler)
 {
     initLex();
     getCh();
 }
 
-Lex::Lex(const char* path):file_(path), ch_(0), linenum_(0)
+Lex::Lex(const char* path, Compiler& compiler)
+	:file_(path)
+	 ,ch_(0)
+	,linenum_(0)
+	, manager_(compiler)
 {
     initLex();
     getCh();
@@ -50,7 +58,7 @@ int32_t Lex::tkWordFind(const std::string & str)
     return -1;
 }
 
-void Lex::parseComment(int32_t type)
+void Lex::parseComment(uint32_t type)
 {
     if (type == 1)
     {
@@ -113,7 +121,7 @@ void Lex::parseComment(int32_t type)
     }
 }
 
-std::string Lex::getTkstr(int32_t index)
+std::string Lex::getTkstr(uint32_t index)
 {
     if (index >= TokenTable.size())
     {
@@ -141,7 +149,7 @@ void Lex::testLex()
 
 #if _WIN32
 
-void Lex::colorToken(int32_t lex_state)
+void Lex::colorToken(uint32_t lex_state)
 {
     HANDLE had = GetStdHandle(STD_OUTPUT_HANDLE);
     switch (lex_state)
@@ -270,24 +278,24 @@ void Lex::initLex()
 	}
 }
 
-void Lex::getToken()
+uint32_t Lex::handleToken()
 {
     preprocess();
     if(isVaildCharacter(ch_))
     {
         parseIdentifier();
 		token_ = tkWordInsert(tkstr_);
-        return;
+        return token_;
     }
     else if(std::isdigit(ch_))
     {
         parseNum();
-        return;
+        return token_;
     } 
     else if(ch_ == EOF)
     {
         token_ = TK_EOF;
-        return;
+        return token_;
     }
     else
     {
@@ -396,13 +404,21 @@ void Lex::getToken()
             case '\'':
                 parseString(ch_);
                 token_ = TK_CCHAR;
-                tkValue_ = *(tkstr_.c_str());
+				/*todo*/
+                tkValue_ = *(tkstr_.c_str()); //need optimization
                 break;
             default:
+				token_ = TK_DEFAULT;
                 break;
         }
     }
     getCh();
+	return token_;
+}
+
+uint32_t Lex::getToken() const
+{
+	return token_;
 }
 
 void Lex::skipWhiteSpace()
