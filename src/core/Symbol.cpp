@@ -3,7 +3,7 @@
 
 using namespace T;
 
-SymbolPointer SymbolManager::findDefine(int code)
+SymbolPointer SymbolManager::findDefine(uint32_t code)
 {
     if(code >= Lex::TokenTable.size())
     {
@@ -12,7 +12,7 @@ SymbolPointer SymbolManager::findDefine(int code)
     return nullptr;
 }
 
-SymbolPointer SymbolManager::findId(int id)
+SymbolPointer SymbolManager::findId(uint32_t id)
 {
     if(id >= Lex::TokenTable.size())
     {

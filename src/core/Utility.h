@@ -146,8 +146,8 @@ public:
 class WriteFile:virtual public File
 {
 public:
-	explicit WriteFile(const std::string& path,  bool isLogFile, int32_t checkEveryN = 4096);
-	explicit WriteFile(const char* path, bool isLogFile, int32_t checkEveryN = 4096);
+	explicit WriteFile(const std::string& path,  bool isLogFile, uint32_t checkEveryN = 4096);
+	explicit WriteFile(const char* path, bool isLogFile, uint32_t checkEveryN = 4096);
 	virtual ~WriteFile();
 	void write(const std::string& str);
 	void write(const char* str, uint32_t size);
@@ -156,7 +156,7 @@ private:
 	void init() override;
 	void windup() override;
 private:
-	int32_t checkEveryN_;
+	uint32_t checkEveryN_;
 	uint64_t writeSize_;
 	uint32_t writeCount_;
 	bool isLogFile_;

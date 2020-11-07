@@ -183,7 +183,7 @@ File::~File()
 
 #pragma region WriteFile
 
-WriteFile::WriteFile(const std::string& path, bool isLogFile, int32_t checkEveryN)
+WriteFile::WriteFile(const std::string& path, bool isLogFile, uint32_t checkEveryN)
     :File(path, FileMode::WriteMode)
     ,isLogFile_(isLogFile)
     ,checkEveryN_(checkEveryN)
@@ -194,7 +194,7 @@ WriteFile::WriteFile(const std::string& path, bool isLogFile, int32_t checkEvery
     init();
 }
 
-WriteFile::WriteFile(const char* path, bool isLogFile, int32_t checkEveryN)
+WriteFile::WriteFile(const char* path, bool isLogFile, uint32_t checkEveryN)
     :File(path, FileMode::WriteMode)
     ,isLogFile_(isLogFile)
     ,checkEveryN_(checkEveryN)

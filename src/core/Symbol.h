@@ -14,6 +14,18 @@ using SymbolTypePointer = std::shared_ptr<SymbolType>;
 
 struct SymbolType
 {
+	SymbolType(int t)
+		:type(t)
+		,ref(nullptr) 
+	{
+
+	}
+	SymbolType(int t, SymbolPointer r)
+		:type(t)
+		, ref(r)
+	{
+
+	}
     int type;
     SymbolPointer ref;
 };
@@ -32,8 +44,8 @@ struct Symbol
 class SymbolManager
 {
 public:
-    SymbolPointer findDefine(int code);
-    SymbolPointer findId(int id);
+    SymbolPointer findDefine(uint32_t code);
+    SymbolPointer findId(uint32_t id);
     int typeSize(const SymbolType* t, int* v);
     void makePointer(SymbolType* t);
 public:

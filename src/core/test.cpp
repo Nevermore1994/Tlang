@@ -16,6 +16,4 @@ void testLog()
 
 void testLex()
 {
-    Lex lex("test.tl");
-    lex.testLex();
 }
