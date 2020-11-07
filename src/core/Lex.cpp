@@ -176,7 +176,7 @@ void Lex::colorToken(uint32_t lex_state)
 }
 
 #else
-void Lex::colorToken(const int32_t lex_state)
+void Lex::colorToken(uint32_t lex_state)
 {
     switch (lex_state)
     {
