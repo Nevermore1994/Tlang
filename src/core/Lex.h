@@ -5,82 +5,16 @@
 #include<memory>
 #include<unordered_map>
 #include<cctype> 
+#include<algorithm>
 #include"Utility.h"
 #include"Compiler.h"
+#include"Define.h"
 
 namespace T
 {
 
 class Compiler;
 
-enum TokenCode
-{
-	TK_PLUS,							// +
-	TK_MINUS,							// -
-	TK_STAR,							// *
-	TK_DIVIDE,							// /
-	TK_MOD,								// % 
-	TK_EQ,								// ==
-	TK_NEQ,								// !=
-	TK_LT,								// <
-	TK_LEQ,								// <=
-	TK_GT,								// > 
-	TK_GEQ,								// >=
-	TK_ASSIGN,							// = 
-	TK_POINTSTO,						// ->
-	TK_DOT,								// . 
-	TK_AND,								// & 
-	TK_OPENPA,							// ( 
-	TK_CLOSEPA,							// ) 
-	TK_OPENBR,							// [ 
-	TK_CLOSEBR,							// ] 
-	TK_BEGIN,							// { 
-	TK_END,								// } 
-	TK_SEMICOLON,						// ; 
-	TK_COMMA,							// , 
-	TK_ELLIPSIS,						// ...
-	TK_EOF,								// 
-	TK_SPACE,							//
-										
-	TK_CINT,							// 
-	TK_CCHAR,							// 
-	TK_CSTR,							// 
-	TK_DOUBLE,
-	TK_FLOAT,
-
-	KW_CHAR,							// char
-	KW_SHORT,							// short
-	KW_INT,								// int
-	KW_VOID,							// void
-	KW_DOUBLE,
-	KW_FLOAT,
-	KW_STRUCT,							// struct
-	KW_IF,								// if
-	KW_ELSE,							// else
-	KW_FOR,								// for
-	KW_CONTINUE,						// continue
-	KW_BREAK,							// break
-	KW_RETURN,							// return
-	KW_SIZEOF,							// sizeof
-	KW_INCLUDE,
-	KW_DO,
-	KW_END,
-	KW_LET,
-
-	KW_REQUIRE,
-	KW_ALIGN,							// __align
-	KW_CDECL,							// __cdecl  call
-	KW_STDCALL,							// __stdcall
-
-	TK_DEFAULT,
-	TK_IDENT
-};
-
-enum LexStatus
-{
-	LEX_NORMAL,
-	LEX_SEP,
-};
 
 constexpr int32_t MAXKEYSIZE = 4 * 1024;
 
@@ -118,22 +52,6 @@ struct TkWord
 	std::shared_ptr<Symbol> symId;
 };
 
-struct TkWordHash
-{
-	size_t operator()(const TkWord& w) const noexcept
-	{
-		return std::hash<std::string>{}(w.spelling);
-	}
-};
-
-struct TkWordEqual
-{
-	bool operator()(const TkWord& l, const TkWord& r) const noexcept
-	{
-		return l.spelling == r.spelling;
-	}
-};
-
 class Lex
 {
 public:
@@ -144,7 +62,7 @@ public:
 
 	uint32_t tkWordInsert(const std::string&);
 
-	void tkWordDirectInsert(TkWord w);
+	void tkWordDirectInsert(std::shared_ptr<TkWord> w);
 
 	int tkWordFind(const std::string& str);
 
@@ -176,7 +94,7 @@ public:
 	}
 public:
 	static std::unordered_map<std::string, int32_t> TokenHashTable;
-	static std::vector<TkWord> TokenTable;
+	static std::vector<std::shared_ptr<TkWord>> TokenTable;
 private:
 	FileUtil::ReadFile file_;
 	int64_t linenum_;

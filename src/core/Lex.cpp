@@ -11,7 +11,7 @@ namespace T
 {
 
 std::unordered_map<std::string, int32_t> Lex::TokenHashTable;
-std::vector<TkWord> Lex::TokenTable;
+std::vector<std::shared_ptr<TkWord>> Lex::TokenTable;
 
 Lex::Lex(const std::string& path, Compiler& compiler)
 	: file_(path)
@@ -38,15 +38,15 @@ uint32_t Lex::tkWordInsert(const std::string &str)
     if (TokenHashTable.count(str) == 0)
     {
         TokenHashTable[str] = TokenTable.size();
-        TokenTable.emplace_back(TokenTable.size(), str);
+        TokenTable.emplace_back(std::make_shared<TkWord>(TokenTable.size(), str));
     }
 	return TokenHashTable[str];
 }
 
-void Lex::tkWordDirectInsert(TkWord w)
+void Lex::tkWordDirectInsert(std::shared_ptr<TkWord> w)
 {
-    TokenHashTable.insert_or_assign(w.spelling, TokenTable.size());
-    TokenTable.push_back(std::move(w));
+    TokenHashTable.insert_or_assign(w->spelling, TokenTable.size());
+    TokenTable.push_back(w);
 }
 
 int32_t Lex::tkWordFind(const std::string & str)
@@ -133,7 +133,7 @@ std::string Lex::getTkstr(uint32_t index)
     }
     else
     {
-        return TokenTable[index].spelling;
+        return TokenTable[index]->spelling;
     }
 }
 
@@ -216,7 +216,7 @@ void Lex::clearParseInfo()
 
 void Lex::initLex()
 {
-    TokenTable = {
+    std::vector<TkWord> tokenTable = {
         {TK_PLUS,         "+"            },
         {TK_MINUS,        "-"            },
         {TK_STAR,         "*"            },
@@ -272,10 +272,10 @@ void Lex::initLex()
         {KW_CDECL,        "__cdecl"      },
         {KW_STDCALL,      "__stdcall"    },
     };
-	for (auto& word : TokenTable) 
-	{
-		TokenHashTable[word.spelling] = word.tkcode;
-	}
+    std::for_each(tokenTable.begin(), tokenTable.end(), [](const TkWord& lhs){
+        TokenTable.push_back(std::make_shared<TkWord>(lhs.tkcode, lhs.spelling));
+        TokenHashTable[lhs.spelling] = lhs.tkcode;
+    });
 }
 
 uint32_t Lex::handleToken()

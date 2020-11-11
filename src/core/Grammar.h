@@ -4,52 +4,12 @@
 #include"Symbol.h"
 #include"Lex.h"
 #include"Compiler.h"
+#include"Define.h"
 
 namespace T
 {
 
 class Compiler;
-
-enum class SyntaxState
-{
-	SNTX_NUL,
-	SNTX_SP,
-	SNTX_LF_HT,
-	SNTX_DELAY
-};
-
-enum class StorageClass
-{
-	T_GLOBAL = 0x00f0,
-	T_LOCAL = 0x00f1,
-	T_LLOCAL = 0x00f2,
-	T_CMP = 0x00f3,
-	T_VALMASK = 0x00ff, //mask code
-	T_LVAL = 0x0100,//lvalue
-	T_SYM = 0x0200,//sign
-
-	T_ANOM = 0x10000000,  //anonymous sign
-	T_STRUCT = 0x20000000, 
-	T_MEMBER = 0x40000000, 
-	T_PARAMS = 0x60000000,  
-};
-
-enum TypeCode
-{
-	T_INT = 0,
-	T_CHAR = 1,
-	T_SHORT = 2,
-	T_FLOAT = 3,
-	T_DOUBLE = 4,
-	T_VOID = 5,
-	T_PTR = 6,
-	T_FUNC = 7,
-	T_STRUCT = 8,
-
-	T_BTYPE = 0x000f,
-	T_ARRAY = 0x0010,
-	T_UNDEFINED = 0xffff,
-};
 
 constexpr int ALIGNSET = 0x100;
 

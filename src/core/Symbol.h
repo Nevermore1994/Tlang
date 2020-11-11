@@ -2,6 +2,7 @@
 
 #include<stack>
 #include<memory>
+#include"Define.h"
 
 namespace T
 {
@@ -26,6 +27,12 @@ struct SymbolType
 	{
 
 	}
+	SymbolType()
+		:type(0)
+		,ref(nullptr) 
+	{
+
+	}
     int type;
     SymbolPointer ref;
 };
@@ -38,17 +45,47 @@ struct Symbol
     SymbolType type; 
 	SymbolPointer next; // next pointer
 	SymbolPointer pre; // forward pointer
+	
+	Symbol()
+		:code(0)
+		,reg(0)
+		,value(0)
+		,type()
+		,next(nullptr)
+		,pre(nullptr)
+	{
+
+	}
+
+	Symbol(int v, const SymbolTypePointer& e, int r, int c)
+		:code(c)
+		,reg(r)
+		,value(v)
+		,type(e->type, e->ref)
+		,next(nullptr)
+		,pre(nullptr)
+	{
+
+	}
 };
 
 
 class SymbolManager
 {
 public:
-    SymbolPointer findDefine(uint32_t code);
-    SymbolPointer findId(uint32_t id);
-    int typeSize(const SymbolType* t, int* v);
-    void makePointer(SymbolType* t);
+	enum class StackType
+	{
+		LOCAL_STACK = 0,
+		GLOBAL_STACK,
+	};
 public:
+    SymbolPointer findStructDefine(uint32_t code);
+    SymbolPointer findId(uint32_t id);
+    int typeSize(const SymbolTypePointer t, int& v);
+    void makePointer(SymbolTypePointer t);
+	SymbolPointer symPush(int v, const SymbolTypePointer& type, int r, int c);
+	SymbolPointer symDirectPush(StackType t, int v, const SymbolTypePointer& type, int r, int c);
+private:
     static std::stack<SymbolPointer> globalSymbols;
     static std::stack<SymbolPointer> localSymbols;
 };

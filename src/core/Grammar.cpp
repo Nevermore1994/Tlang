@@ -25,9 +25,9 @@ SymbolTypePointer Grammar::typeSpecifier()
 {
 	SymbolTypePointer res;
 	TypeCode t = TypeCode::T_UNDEFINED;
-	int token_ = manager_.getLex()->getToken();
+	int32_t token = manager_.getLex()->getToken();
 	SymbolPointer ref;
-	switch (token_)
+	switch (token)
 	{
 		case KW_CHAR:
 			t = TypeCode::T_CHAR;
@@ -60,7 +60,7 @@ SymbolTypePointer Grammar::typeSpecifier()
 			res = std::make_shared<SymbolType>(static_cast<int>(t), ref);
 		syntaxState_ = SyntaxState::SNTX_SP;
 	}
-	if (token_ != KW_STRUCT)
+	if (token != KW_STRUCT)
 	{
 		manager_.getLex()->handleToken();
 	}
@@ -69,6 +69,30 @@ SymbolTypePointer Grammar::typeSpecifier()
 
 SymbolPointer Grammar::structSpecifier()
 {
+	manager_.getLex()->handleToken();
+	int32_t token = manager_.getLex()->getToken();
+	
+	syntaxState_ = SyntaxState::SNTX_DELAY;
+	manager_.getLex()->handleToken();
+
+	if(token == TK_BEGIN)
+		syntaxState_ = SyntaxState::SNTX_LF_HT;
+	else if(token == TK_CLOSEPA)
+		syntaxState_ = SyntaxState::SNTX_NUL;
+	else
+		syntaxState_ = SyntaxState::SNTX_SP;
+	
+	syntaxIndent();
+
+	if(token < TK_IDENT)
+	{
+		//hint struct id expect
+	}
+	SymbolPointer sym = manager_.getSymbolManager()->findStructDefine(token);
+	SymbolType type;
+	if(sym == nullptr){
+		type.type = KW_STRUCT;
+	}
 	return nullptr;
 }
 
