@@ -153,8 +153,6 @@ LogStream& LogStream::operator<<(double v) noexcept
 	return *this;
 }
 
-
-
 template<typename T>
 Fmt::Fmt(const char* fmt, T val)
 {

@@ -15,13 +15,13 @@ using SymbolTypePointer = std::shared_ptr<SymbolType>;
 
 struct SymbolType
 {
-	SymbolType(int t)
+	SymbolType(int32_t t)
 		:type(t)
 		,ref(nullptr) 
 	{
 
 	}
-	SymbolType(int t, SymbolPointer r)
+	SymbolType(int32_t t, SymbolPointer r)
 		:type(t)
 		, ref(r)
 	{
@@ -33,15 +33,15 @@ struct SymbolType
 	{
 
 	}
-    int type;
+    int32_t type;
     SymbolPointer ref;
 };
 
 struct Symbol
 {
-	int code;  // symbol code
-	int reg;  //symbol register
-	int value; //symbol link value 
+	int32_t code;  // symbol code
+	int32_t reg;  //symbol register
+	int32_t value; //symbol link value 
     SymbolType type; 
 	SymbolPointer next; // next pointer
 	SymbolPointer pre; // forward pointer
@@ -57,7 +57,7 @@ struct Symbol
 
 	}
 
-	Symbol(int v, const SymbolTypePointer& e, int r, int c)
+	Symbol(int32_t v, const SymbolTypePointer& e, int32_t r, int32_t c)
 		:code(c)
 		,reg(r)
 		,value(v)
@@ -69,6 +69,7 @@ struct Symbol
 	}
 };
 
+class Compiler;
 
 class SymbolManager
 {
@@ -79,15 +80,21 @@ public:
 		GLOBAL_STACK,
 	};
 public:
+	SymbolManager(Compiler& m);
     SymbolPointer findStructDefine(uint32_t code);
     SymbolPointer findId(uint32_t id);
-    int typeSize(const SymbolTypePointer t, int& v);
-    void makePointer(SymbolTypePointer t);
-	SymbolPointer symPush(int v, const SymbolTypePointer& type, int r, int c);
-	SymbolPointer symDirectPush(StackType t, int v, const SymbolTypePointer& type, int r, int c);
+    int32_t typeSize(const SymbolTypePointer& t, int32_t& v);
+	SymbolPointer symPush(int32_t v, const SymbolTypePointer& type, int32_t r, int32_t c);
+	SymbolPointer symDirectPush(StackType t, int32_t v, const SymbolTypePointer& type, int32_t r, int32_t c);
+	SymbolPointer funcSymPush(int32_t v, const SymbolTypePointer& type);
+	SymbolPointer varSymPut(const SymbolTypePointer& type, int32_t t, int32_t v, int32_t addr);
+	SymbolPointer secSymPut(const char* sec, int32_t c);
+	void symPop(StackType t, const SymbolPointer b);
+	void mkPointer(SymbolTypePointer& ptype);
 private:
     static std::stack<SymbolPointer> globalSymbols;
     static std::stack<SymbolPointer> localSymbols;
+	Compiler& manager_;
 };
 
 }// end namespace T

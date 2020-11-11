@@ -16,5 +16,5 @@ void Compiler::init(const char * path)
 {
 	lex_ = std::make_shared<Lex>(path, *this);
 	grammar_ = std::make_shared<Grammar>(*this);
-	symbolManager_ = std::make_shared<SymbolManager>();
+	symbolManager_ = std::make_shared<SymbolManager>(*this);
 }

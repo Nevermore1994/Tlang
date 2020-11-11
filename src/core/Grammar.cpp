@@ -48,7 +48,7 @@ SymbolTypePointer Grammar::typeSpecifier()
 			t = TypeCode::T_FLOAT;
 			break;
 		case KW_STRUCT:
-			t = TypeCode::T_STRUCT;
+			t = TypeCode::T_STRUCTT;
 			ref = structSpecifier();
 			break;
 	}

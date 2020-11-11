@@ -70,7 +70,7 @@ enum LexStatus
 };
 
 
-enum class SyntaxState
+enum SyntaxState
 {
 	SNTX_NUL,
 	SNTX_SP,
@@ -78,7 +78,7 @@ enum class SyntaxState
 	SNTX_DELAY
 };
 
-enum class StorageClass
+enum StorageClass
 {
 	T_GLOBAL = 0x00f0,
 	T_LOCAL = 0x00f1,
@@ -104,7 +104,7 @@ enum TypeCode
 	T_VOID = 5,
 	T_PTR = 6,
 	T_FUNC = 7,
-	T_STRUCT = 8,
+	T_STRUCTT = 8,
 
 	T_BTYPE = 0x000f,
 	T_ARRAY = 0x0010,

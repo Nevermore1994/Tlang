@@ -57,7 +57,7 @@ public:
     void syntaxIndent();
 private:
     SyntaxState syntaxState_;
-    int syntaxLevel_;
+    int32_t syntaxLevel_;
 	Compiler& manager_;
 };
 
