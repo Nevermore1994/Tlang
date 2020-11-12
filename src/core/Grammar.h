@@ -17,8 +17,8 @@ class Grammar
 {
 public:
 	Grammar(Compiler& compiler);
-    SyntaxState getSyntaxState() const { return syntaxState_; }
-    int32_t getSyntaxLevel() const { return syntaxLevel_;}
+    inline SyntaxState getSyntaxState() const { return syntaxState_; }
+    inline int32_t getSyntaxLevel() const { return syntaxLevel_;}
     void translationUnit();
     void externalDeclaration(StorageClass level);
     //void initializer(SymbolType* ptype,  int32_t c, Section* psec); 
@@ -35,11 +35,11 @@ public:
     void funcbody(SymbolPointer sym);
     int32_t isTypeSpecifier(int32_t id);
     void statement(int32_t& bsym, int32_t& csym);
-    void compoundStatement(int32_t* bsym, int32_t* csym);
+    void compoundStatement(int32_t& bsym, int32_t& csym);
     void ifStatement(int32_t& bsym, int32_t& csym);
-    void forStatement(int32_t* bsym, int32_t* csym);
-    void continueStatement(int32_t* csym);
-    void breakStatement(int32_t* bsym);
+    void forStatement(int32_t& bsym, int32_t& csym);
+    void continueStatement(int32_t& csym);
+    void breakStatement(int32_t& bsym);
     void returnStatement();
     void expressionStatement();
     void expression();

@@ -86,11 +86,16 @@ public:
 	void testLex();
 	void colorToken(uint32_t lex_state);
 
-	int64_t getFileLineNum() const noexcept
+	inline int64_t getFileLineNum() const noexcept
 	{
 		if (ch_ != -1)
 			return -1;
 		return linenum_;
+	}
+	
+	inline const FileUtil::ReadFile& getReadFile() const
+	{
+		return file_;
 	}
 public:
 	static std::unordered_map<std::string, int32_t> TokenHashTable;

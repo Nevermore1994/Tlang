@@ -167,7 +167,11 @@ File::File(const std::string& path, FileMode mode)
     :path_(path)
     ,mode_(mode)
 {
-
+#if _WIN32
+    fileName_ = path_.substr(path_.find_last_of("\\") + 1);
+#else
+    fileName_ = path_.substr(path_.find_last_of("/") + 1);
+#endif
 }
 
 File::File(const char* path, FileMode mode)
@@ -185,6 +189,8 @@ File::~File()
         file_ = nullptr;
     }
 }
+
+
 
 #pragma endregion
 
@@ -393,6 +399,13 @@ void ReadFile::init()
     readSize_ = 0;
     readOver_ = false;
     Util::outputConsoleLine(path_, " begin read ....");
+}
+
+bool ReadFile::switchFile(const char* path)
+{
+    path_ = path;
+    init();
+    return file_ != nullptr;
 }
 
 void ReadFile::windup()

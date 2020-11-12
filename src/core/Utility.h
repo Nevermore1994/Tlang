@@ -138,6 +138,10 @@ public:
 	File& operator=(const File&) = delete;
 	File(const File&) = delete;
 	virtual ~File();
+	inline const std::string& getFileName() const 
+	{
+		return fileName_;
+	}
 private:
 	virtual void init() = 0;
 	virtual void windup() = 0;
@@ -145,6 +149,7 @@ public:
 	std::string path_;
 	File_t file_;
 	FileMode mode_;
+	std::string fileName_;
 };
 
 class WriteFile:virtual public File
@@ -179,6 +184,7 @@ public:
 	std::string readWord();
 	inline bool readOver() const { return readOver_;}
 	inline uint64_t readSize() const { return readSize_; }
+	bool switchFile(const char* path);
 private:
 	void init() override;
 	void windup() override;
