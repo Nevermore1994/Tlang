@@ -55,7 +55,6 @@ SymbolPointer SymbolManager::symPush(int32_t v, const SymbolTypePointer& type, i
             //hint error
         }
         auto tkWord = Lex::TokenTable[va];
-        SymbolPointer ps;
         if(v & T_STRUCT)
             p->pre = tkWord->symStruct;
         else
@@ -102,7 +101,7 @@ SymbolPointer SymbolManager::varSymPut(const SymbolTypePointer& type, int32_t t,
 SymbolPointer SymbolManager::secSymPut(const char* sec, int32_t c)
 {
     uint32_t index = manager_.getLex()->tkWordInsert(std::string(sec));
-    auto p = std::make_shared<SymbolType>(T_INT);
+    auto p = std::make_shared<SymbolType>(TYPE_INT);
     return symPush(Lex::TokenTable[index]->tkcode, p, T_GLOBAL, c);
 }
 
@@ -146,7 +145,7 @@ void SymbolManager::symPop(StackType t, const SymbolPointer end)
 void SymbolManager::mkPointer(SymbolTypePointer& ptype)
 {
 	auto psym = symPush(T_ANOM, ptype, 0, -1);
-	ptype->type = T_PTR; 
+	ptype->type = TYPE_PTR; 
 	ptype->ref = psym;
 }
 
@@ -155,33 +154,33 @@ int32_t SymbolManager::typeSize(const SymbolTypePointer& t, int32_t& v)
 {
     constexpr int32_t ptrSize = sizeof(nullptr);
     
-    int bt = t->type & T_BTYPE;
+    int bt = t->type & TYPE_BTYPE;
     switch (bt)
     {
-        case T_STRUCTT:
+        case TYPE_STRUCT:
             v = t->ref->reg;
             return t->ref->code;
-        case T_PTR:
-            if(t->type & T_ARRAY)
+        case TYPE_PTR:
+            if(t->type & TYPE_ARRAY)
             {
                 auto p = std::make_shared<SymbolType>(t->ref->type.type, t->ref->type.ref);
                 return typeSize(p, v) * t->ref->code;
             }
             else
                 return ptrSize;
-        case T_CHAR:
+        case TYPE_CHAR:
             v = 1; 
             return v;
-        case T_SHORT:
+        case TYPE_SHORT:
             v = 2;
             return v;
-        case T_INT:
+        case TYPE_INT:
             v = 4;
             return v;
-        case T_FLOAT:
+        case TYPE_FLOAT:
             v = 4;
             return v;
-        case T_DOUBLE:
+        case TYPE_DOUBLE:
             v = 8;
             return v;
         default:

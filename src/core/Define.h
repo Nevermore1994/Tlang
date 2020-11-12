@@ -96,17 +96,17 @@ enum StorageClass
 
 enum TypeCode
 {
-	T_INT = 0,
-	T_CHAR = 1,
-	T_SHORT = 2,
-	T_FLOAT = 3,
-	T_DOUBLE = 4,
-	T_VOID = 5,
-	T_PTR = 6,
-	T_FUNC = 7,
-	T_STRUCTT = 8,
+	TYPE_INT = 0,
+	TYPE_CHAR = 1,
+	TYPE_SHORT = 2,
+	TYPE_FLOAT = 3,
+	TYPE_DOUBLE = 4,
+	TYPE_VOID = 5,
+	TYPE_PTR = 6,
+	TYPE_FUNC = 7,
+	TYPE_STRUCT = 8,
 
-	T_BTYPE = 0x000f,
-	T_ARRAY = 0x0010,
-	T_UNDEFINED = 0xffff,
+	TYPE_BTYPE = 0x000f,
+	TYPE_ARRAY = 0x0010,
+	TYPE_UNDEFINED = 0xffff,
 };

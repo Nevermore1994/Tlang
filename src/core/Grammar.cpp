@@ -24,40 +24,40 @@ void Grammar::externalDeclaration(StorageClass level)
 SymbolTypePointer Grammar::typeSpecifier()
 {
 	SymbolTypePointer res;
-	TypeCode t = TypeCode::T_UNDEFINED;
+	TypeCode t = TYPE_UNDEFINED;
 	int32_t token = manager_.getLex()->getToken();
 	SymbolPointer ref;
 	switch (token)
 	{
 		case KW_CHAR:
-			t = TypeCode::T_CHAR;
+			t = TYPE_CHAR;
 			break;
 		case KW_SHORT:
-			t = TypeCode::T_SHORT;
+			t = TYPE_SHORT;
 			break;
 		case KW_VOID:
-			t = TypeCode::T_VOID;
+			t = TYPE_VOID;
 			break;
 		case KW_INT:
-			t = TypeCode::T_INT;
+			t = TYPE_INT;
 			break;
 		case KW_DOUBLE:
-			t = TypeCode::T_DOUBLE;
+			t = TYPE_DOUBLE;
 			break;
 		case KW_FLOAT:
-			t = TypeCode::T_FLOAT;
+			t = TYPE_FLOAT;
 			break;
 		case KW_STRUCT:
-			t = TypeCode::T_STRUCTT;
+			t = TYPE_STRUCT;
 			ref = structSpecifier();
 			break;
 	}
-	if (t != TypeCode::T_UNDEFINED)
+	if (t != TYPE_UNDEFINED)
 	{
 		if (ref == nullptr)
-			res = std::make_shared<SymbolType>(static_cast<int>(t));
+			res = std::make_shared<SymbolType>(t);
 		else
-			res = std::make_shared<SymbolType>(static_cast<int>(t), ref);
+			res = std::make_shared<SymbolType>(t, ref);
 		syntaxState_ = SyntaxState::SNTX_SP;
 	}
 	if (token != KW_STRUCT)
@@ -89,9 +89,9 @@ SymbolPointer Grammar::structSpecifier()
 		//hint struct id expect
 	}
 	SymbolPointer sym = manager_.getSymbolManager()->findStructDefine(token);
-	SymbolType type;
+	auto type = std::make_shared<SymbolType>(KW_STRUCT);
 	if(sym == nullptr){
-		type.type = KW_STRUCT;
+		sym = manager_.getSymbolManager()->symPush(token | T_STRUCT, type, 0, -1);
 	}
 	return nullptr;
 }
