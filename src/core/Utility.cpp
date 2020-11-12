@@ -100,6 +100,13 @@ std::string getNowTime()
 }
 #endif
 
+int32_t calcAlign(int32_t n, int32_t align)
+{
+	int32_t num = n + align - 1;
+	int32_t res = ~(align - 1);
+	return (num & res);
+}
+
 Thread::Thread(const char* name)
     :name_(name)
     ,worker_(&Thread::func, this)

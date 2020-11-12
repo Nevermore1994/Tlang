@@ -11,35 +11,35 @@ namespace T
 
 class Compiler;
 
-constexpr int ALIGNSET = 0x100;
+constexpr int32_t ALIGNSET = 0x100;
 
 class Grammar
 {
 public:
 	Grammar(Compiler& compiler);
     SyntaxState getSyntaxState() const { return syntaxState_; }
-    int getgetSyntaxLevel() const { return syntaxLevel_;}
+    int32_t getSyntaxLevel() const { return syntaxLevel_;}
     void translationUnit();
     void externalDeclaration(StorageClass level);
-    //void initializer(SymbolType* ptype,  int c, Section* psec); 
+    //void initializer(SymbolType* ptype,  int32_t c, Section* psec); 
 	SymbolTypePointer typeSpecifier();
 	SymbolPointer structSpecifier();
     void structDeclarationList(SymbolTypePointer type);
-    void structDeclaration(int* maxalign, int* offset, SymbolPointer& ps);
-    void declarator(SymbolTypePointer type, int* v, int* forceAlign);
-    void functionCallingConvention(int* fc);
-    void structMemberAlignment(int* forceAlign);
-    void directDeclarator(SymbolTypePointer type, int* v, int funcCall);
-    void directDeclaratorPostfix(SymbolTypePointer type,  int funcCall);
-    void parameterTypeList(SymbolTypePointer type, int funcCall);
+    void structDeclaration(int32_t& maxalign, int32_t& offset, SymbolPointer& ps);
+    void declarator(SymbolTypePointer type, int32_t& v, int32_t& forceAlign);
+    void functionCallingConvention(int32_t& fc);
+    void structMemberAlignment(int32_t& forceAlign);
+    void directDeclarator(SymbolTypePointer type, int32_t& v, int32_t funcCall);
+    void directDeclaratorPostfix(SymbolTypePointer type,  int32_t funcCall);
+    void parameterTypeList(SymbolTypePointer type, int32_t funcCall);
     void funcbody(SymbolPointer sym);
-    int isTypeSpecifier(int id);
-    void statement(int* bsym, int* csym);
-    void compoundStatement(int* bsym, int* csym);
-    void ifStatement(int* bsym, int* csym);
-    void forStatement(int* bsym, int* csym);
-    void continueStatement(int* csym);
-    void breakStatement(int* bsym);
+    int32_t isTypeSpecifier(int32_t id);
+    void statement(int32_t& bsym, int32_t& csym);
+    void compoundStatement(int32_t* bsym, int32_t* csym);
+    void ifStatement(int32_t& bsym, int32_t& csym);
+    void forStatement(int32_t* bsym, int32_t* csym);
+    void continueStatement(int32_t* csym);
+    void breakStatement(int32_t* bsym);
     void returnStatement();
     void expressionStatement();
     void expression();
@@ -53,7 +53,7 @@ public:
     void postfixExpression();
     void primaryExpression();
     void argumentExpressionList();
-    void printTab(int num);
+    void printTab(int32_t num);
     void syntaxIndent();
 private:
     SyntaxState syntaxState_;

@@ -110,3 +110,15 @@ enum TypeCode
 	TYPE_ARRAY = 0x0010,
 	TYPE_UNDEFINED = 0xffff,
 };
+
+enum ErrorLevel
+{
+    LEVEL_WARNING = 1,
+    LEVEL_ERROR,
+};
+
+enum WorkStage
+{
+    STAGE_COMPILE = 1, 
+    STAGE_LINK,
+};

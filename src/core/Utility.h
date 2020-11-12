@@ -72,8 +72,12 @@ std::string getLogFileName(const std::string& basename);
 
 std::string getNowTime();
 
+int32_t calcAlign(int32_t n, int32_t align);
+
+
 //only linux
 std::string getColorText(const std::string& str, TextColor color, int32_t extraInfo = nil);
+
 
 class Thread
 {

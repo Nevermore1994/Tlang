@@ -98,33 +98,57 @@ SymbolPointer Grammar::structSpecifier()
 
 void Grammar::structDeclarationList(SymbolTypePointer type)
 {
+	syntaxState_ = SyntaxState::SNTX_LF_HT;
+	++syntaxLevel_;
+	auto psym  = type->ref;
+	if(psym->code != -1)
+	{
+		// hint error
+		return;
+	}
+
+	manager_.getLex()->handleToken();
+	int32_t maxAlign = 1;
+	SymbolPointer& next = psym->next;
+	int32_t offset = 0;
+	int32_t token = manager_.getLex()->getToken();
+	while(token != TK_END)
+	{
+		structDeclaration(maxAlign, offset, next);
+	}
+	
+	token = manager_.getLex()->getToken();
+	// if(token == TK_END)
+	// 	//skip
+	syntaxState_ = SyntaxState::SNTX_LF_HT;
+	//psym->code =
 }
 
-void Grammar::structDeclaration(int * maxalign, int * offset, SymbolPointer & ps)
+void Grammar::structDeclaration(int32_t& maxalign, int32_t& offset, SymbolPointer& ps)
 {
 }
 
-void Grammar::declarator(SymbolTypePointer type, int * v, int * forceAlign)
+void Grammar::declarator(SymbolTypePointer type, int32_t& v, int32_t& forceAlign)
 {
 }
 
-void Grammar::functionCallingConvention(int * fc)
+void Grammar::functionCallingConvention(int32_t& fc)
 {
 }
 
-void Grammar::structMemberAlignment(int * forceAlign)
+void Grammar::structMemberAlignment(int32_t& forceAlign)
 {
 }
 
-void Grammar::directDeclarator(SymbolTypePointer type, int * v, int funcCall)
+void Grammar::directDeclarator(SymbolTypePointer type, int32_t& v, int32_t funcCall)
 {
 }
 
-void Grammar::directDeclaratorPostfix(SymbolTypePointer type, int funcCall)
+void Grammar::directDeclaratorPostfix(SymbolTypePointer type, int32_t funcCall)
 {
 }
 
-void Grammar::parameterTypeList(SymbolTypePointer type, int funcCall)
+void Grammar::parameterTypeList(SymbolTypePointer type, int32_t funcCall)
 {
 }
 
@@ -132,32 +156,32 @@ void Grammar::funcbody(SymbolPointer sym)
 {
 }
 
-int Grammar::isTypeSpecifier(int id)
+int32_t Grammar::isTypeSpecifier(int32_t id)
 {
 	return 0;
 }
 
-void Grammar::statement(int * bsym, int * csym)
+void Grammar::statement(int32_t&  bsym, int32_t& csym)
 {
 }
 
-void Grammar::compoundStatement(int * bsym, int * csym)
+void Grammar::compoundStatement(int32_t& bsym, int32_t& csym)
 {
 }
 
-void Grammar::ifStatement(int * bsym, int * csym)
+void Grammar::ifStatement(int32_t& bsym, int32_t& csym)
 {
 }
 
-void Grammar::forStatement(int * bsym, int * csym)
+void Grammar::forStatement(int32_t& bsym, int32_t& csym)
 {
 }
 
-void Grammar::continueStatement(int * csym)
+void Grammar::continueStatement(int32_t& csym)
 {
 }
 
-void Grammar::breakStatement(int * bsym)
+void Grammar::breakStatement(int32_t& bsym)
 {
 }
 
@@ -213,7 +237,7 @@ void Grammar::argumentExpressionList()
 {
 }
 
-void Grammar::printTab(int num)
+void Grammar::printTab(int32_t num)
 {
 }
 
